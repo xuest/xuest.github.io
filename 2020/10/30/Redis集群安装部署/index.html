@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Redis集群安装部署1  Redis下载从该网站http:&#x2F;&#x2F;www.redis.net.cn&#x2F;下载redis稳定版本[Redis 5.0.4](http:&#x2F;&#x2F;download.redis.io&#x2F;releases&#x2F;redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)。 模式: 三主三从 5.0版本后不需要ruby支持，其底层改由C实现 主从配置、leader选举由red">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/2020/10/30/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Redis集群安装部署1  Redis下载从该网站http:&#x2F;&#x2F;www.redis.net.cn&#x2F;下载redis稳定版本[Redis 5.0.4](http:&#x2F;&#x2F;download.redis.io&#x2F;releases&#x2F;redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)。 模式: 三主三从 5.0版本后不需要ruby支持，其底层改由C实现 主从配置、leader选举由red">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-30T07:43:36.238Z">
+<meta property="article:modified_time" content="2020-11-23T07:06:22.034Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Redis集群安装部署" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/10/30/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" class="article-date">
+  <time datetime="2020-10-30T07:43:36.238Z" itemprop="datePublished">2020-10-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Redis集群安装部署"><a href="#Redis集群安装部署" class="headerlink" title="Redis集群安装部署"></a>Redis集群安装部署</h1><h2 id="1-Redis下载"><a href="#1-Redis下载" class="headerlink" title="1  Redis下载"></a>1  Redis下载</h2><p>从该网站<a target="_blank" rel="noopener" href="http://www.redis.net.cn/%E4%B8%8B%E8%BD%BDredis%E7%A8%B3%E5%AE%9A%E7%89%88%E6%9C%AC[Redis">http://www.redis.net.cn/下载redis稳定版本[Redis</a> 5.0.4](<a target="_blank" rel="noopener" href="http://download.redis.io/releases/redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)%E3%80%82">http://download.redis.io/releases/redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)。</a></p>
+<p>模式: 三主三从</p>
+<p>5.0版本后不需要ruby支持，其底层改由C实现</p>
+<p>主从配置、leader选举由redis自己实现</p>
+<h2 id="1-1-测试服务器"><a href="#1-1-测试服务器" class="headerlink" title="1.1 测试服务器"></a>1.1 测试服务器</h2><p>操作系统: centos</p>
+<p>192.168.102.33:6379 192.168.102.33:6380</p>
+<p>192.168.102.34:6379 192.168.102.34:6380</p>
+<p>192.168.102.35:6379 192.168.102.35:6380</p>
+<h2 id="1-2-安装redis"><a href="#1-2-安装redis" class="headerlink" title="1.2 安装redis"></a>1.2 安装redis</h2><p>yum install gcc</p>
+<p>yum install tcl</p>
+<p>make 安装需要gcc和tcl</p>
+<p>#在集群服务器做出以下操作：</p>
+<p>cd /usr/local/</p>
+<p>tar xzf redis-5.0.4.tar.gz</p>
+<p>cd redis-5.0.4</p>
+<p>执行make install</p>
+<p>至此redis安装完成</p>
+<p>运行#make test 测试</p>
+<h1 id="2-redis配置文件"><a href="#2-redis配置文件" class="headerlink" title="2  redis配置文件"></a>2  redis配置文件</h1><p>cp redis.conf nodes-6379.conf </p>
+<p>cp redis.conf nodes-6380.conf</p>
+<p>分别编辑nodes-6379.conf 、nodes-6380.conf</p>
+<p>#bind 127.0.0.1（注释掉）</p>
+<p>daemonize yes  //后台启动</p>
+<p>port 6379（分别对每个机器的端口号进行设置）</p>
+<p>dir /usr/local/redis-data/6379/（指定数据文件存放位置，必须要指定不同的目录位置，不然会丢失数据）</p>
+<p>cluster-enabled yes（启动集群模式）</p>
+<p>cluster-config-file nodes-6379.conf（集群节点信息文件，这里63xx最好和port对应上）</p>
+<p>cluster-node-timeout 5000</p>
+<p>protected-mode no  （关闭保护模式）</p>
+<p>appendonly yes （启动：设置yes,修改默认的appendonly no,改为yes</p>
+<p>将有数据的aof文件复制一份保存到对应目录(config get dir)</p>
+<p>恢复：重启redis然后重新加载） </p>
+<p>requirepass admin （配置redis服务器密码，不配的话jedis连接会报如下错误）</p>
+<p>以上配置每台都需要调整，nodes-6379.conf，nodes-6380.conf</p>
+<h1 id="3-启动redis实例"><a href="#3-启动redis实例" class="headerlink" title="3  启动redis实例"></a>3  启动redis实例</h1><p>cd /usr/local/</p>
+<p>mkdir redis-data/6379</p>
+<p>mkdir redis-data/6380</p>
+<p>Redis启动时不会自动创建数据文件存放目录，启动前手动创建</p>
+<p>cd /usr/local/ redis-5.0.4/scr</p>
+<p>启动</p>
+<p>./redis-server ../nodes-6379.conf</p>
+<p>./redis-server ../nodes-6380.conf</p>
+<p>以此步骤启动每个机器上的redis实例</p>
+<h1 id="4-redis配置集群"><a href="#4-redis配置集群" class="headerlink" title="4  redis配置集群"></a>4  redis配置集群</h1><p>任选一台 我这使用192.168.102.33</p>
+<p>cd /usr/local/redis-5.0.4/src/</p>
+<p>./redis-cli –cluster create –cluster-replicas 1 192.168.102.33:6379 192.168.102.33:6380 192.168.102.34:6379 192.168.102.34:6380 192.168.102.35:6379 192.168.102.35:6380 –cluster-replicas 1 -a admin</p>
+<p>注意–cluster-replicas 1 -a admin 带上密码 否则集群创建不成功</p>
+<p>以上redis5.0.4集群搭建完毕</p>
+<h1 id="5-测试"><a href="#5-测试" class="headerlink" title="5  测试"></a>5  测试</h1>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/10/30/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" data-id="cki8eocx50004nohx1y5ja1q4" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/10/28/Elasticsearch%E9%9B%86%E7%BE%A4/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/12/01/Docker%E6%95%99%E7%A8%8B%E8%AE%B2%E8%A7%A3/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/30/Docker%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E6%90%AD%E5%BB%BA/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/27/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/10/30/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

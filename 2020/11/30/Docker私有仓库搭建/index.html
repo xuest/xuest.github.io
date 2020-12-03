@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Docker 搭建私有仓库以Harbor为列搭建私有仓库 一、Harbor概述Habor是由VMWare公司开源的容器镜像仓库。事实上，Habor是在Docker Registry上进行了相应的 企业级扩展，从而获得了更加广泛的应用，这些新的企业级特性包括：管理用户界面，基于角色的访 问控制 ，AD&#x2F;LDAP集成以及审计日志等，足以满足基本企业需求。 官方地址：https:&#x2F;&#x2F;vmware.git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/2020/11/30/Docker%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Docker 搭建私有仓库以Harbor为列搭建私有仓库 一、Harbor概述Habor是由VMWare公司开源的容器镜像仓库。事实上，Habor是在Docker Registry上进行了相应的 企业级扩展，从而获得了更加广泛的应用，这些新的企业级特性包括：管理用户界面，基于角色的访 问控制 ，AD&#x2F;LDAP集成以及审计日志等，足以满足基本企业需求。 官方地址：https:&#x2F;&#x2F;vmware.git">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="c:/Users/XUEST/AppData/Roaming/Typora/typora-user-images/image-20201201105746658.png">
+<meta property="article:published_time" content="2020-11-30T03:03:17.669Z">
+<meta property="article:modified_time" content="2020-12-01T09:13:52.186Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/XUEST/AppData/Roaming/Typora/typora-user-images/image-20201201105746658.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Docker私有仓库搭建" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/11/30/Docker%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E6%90%AD%E5%BB%BA/" class="article-date">
+  <time datetime="2020-11-30T03:03:17.669Z" itemprop="datePublished">2020-11-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Docker-搭建私有仓库"><a href="#Docker-搭建私有仓库" class="headerlink" title="Docker 搭建私有仓库"></a>Docker 搭建私有仓库</h1><p>以Harbor为列搭建私有仓库</p>
+<h2 id="一、Harbor概述"><a href="#一、Harbor概述" class="headerlink" title="一、Harbor概述"></a>一、Harbor概述</h2><p>Habor是由VMWare公司开源的容器镜像仓库。事实上，Habor是在Docker Registry上进行了相应的</p>
+<p>企业级扩展，从而获得了更加广泛的应用，这些新的企业级特性包括：管理用户界面，基于角色的访</p>
+<p>问控制 ，AD/LDAP集成以及审计日志等，足以满足基本企业需求。</p>
+<p>官方地址：<a target="_blank" rel="noopener" href="https://vmware.github.io/harbor/cn/">https://vmware.github.io/harbor/cn/</a></p>
+<p>Github项目地址：<a target="_blank" rel="noopener" href="https://github.com/goharbor/harbor">https://github.com/goharbor/harbor</a></p>
+<p>安装包下载地址：<a target="_blank" rel="noopener" href="https://github.com/goharbor/harbor/releases">https://github.com/goharbor/harbor/releases</a></p>
+<ul>
+<li><strong>Harbor相关组件</strong>：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>harbor-adminserver</td>
+<td>配置管理中心</td>
+</tr>
+<tr>
+<td>harbor-db</td>
+<td>Mysql数据库</td>
+</tr>
+<tr>
+<td>harbor-jobservice</td>
+<td>负责镜像复制</td>
+</tr>
+<tr>
+<td>harbor-log</td>
+<td>记录操作日志</td>
+</tr>
+<tr>
+<td>harbor-ui</td>
+<td>Web管理页面和API</td>
+</tr>
+<tr>
+<td>nginx</td>
+<td>前端代理，负责前端页面和镜像上传/下载转发</td>
+</tr>
+<tr>
+<td>redis</td>
+<td>会话</td>
+</tr>
+<tr>
+<td>registry</td>
+<td>镜像存储</td>
+</tr>
+</tbody></table>
+<h2 id="二、Harbor安装"><a href="#二、Harbor安装" class="headerlink" title="二、Harbor安装"></a>二、Harbor安装</h2><p>1、先安装docker-compose</p>
+<p>curl -L <a target="_blank" rel="noopener" href="https://get.daocloud.io/docker/compose/releases/download/1.25.0/docker-compose-%60uname">https://get.daocloud.io/docker/compose/releases/download/1.25.0/docker-compose-`uname</a> -s<code>-</code>uname -m` &gt; /usr/local/bin/docker-compose </p>
+<p>给docker-compose添加执行权限</p>
+<p>chmod +x /usr/local/bin/docker-compose</p>
+<p>查看docker-compose是否安装成功</p>
+<p>docker-compose -version</p>
+<p>docker-compose version 1.27.3, build 4092ae5d</p>
+<p>2、下载Harbor的压缩包v2.1.1</p>
+<p>wget <a target="_blank" rel="noopener" href="https://github.com/goharbor/harbor/releases/download/v2.1.1/harbor-offline-installer-v2.1.1.tgz">https://github.com/goharbor/harbor/releases/download/v2.1.1/harbor-offline-installer-v2.1.1.tgz</a></p>
+<p>上传压缩包到linux，并解压</p>
+<p>tar zxvf harbor-offline-installer-v2.1.1.tgz</p>
+<p>修改配置:</p>
+<p>cp harbor.yml.tmpl  harbor.yml</p>
+<p>vim harbor.yml</p>
+<p>修改hostname: 192.168.102.78   密码hd123456</p>
+<p>注释掉https默认（如有https另说）</p>
+<p>3、安装Harbor</p>
+<p>./prepare </p>
+<p>./install.sh</p>
+<p>4、启动、停止Harbor</p>
+<p>docker-compose up -d 启动 </p>
+<p>docker-compose stop 停止 </p>
+<p>docker-compose restart 重新启动</p>
+<p>5、访问Harbor</p>
+<p><a target="_blank" rel="noopener" href="http://192.168.102.78/">http://192.168.102.78</a></p>
+<p>默认账户密码：admin/hd12345</p>
+<p>6、配置http镜像仓库可信任</p>
+<p>vim /etc/docker/daemon.json    </p>
+<h2 id="编辑配置文件-添加一行信任授权内容："><a href="#编辑配置文件-添加一行信任授权内容：" class="headerlink" title="编辑配置文件 添加一行信任授权内容："></a>编辑配置文件 添加一行信任授权内容：</h2><p> {  </p>
+<p>​       “insecure-registries”: [“192.168.102.78”]   </p>
+<p> } </p>
+<p>添加完成后重启docker服务： systemctl restart docker</p>
+<p><img src="C:\Users\XUEST\AppData\Roaming\Typora\typora-user-images\image-20201201105746658.png" alt="image-20201201105746658"></p>
+<p>测试实例</p>
+<p>docker login 192.168.102.78</p>
+<p>admin</p>
+<p>hd123456</p>
+<p>docker push 192.168.102.78/4.0/v4manage</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/11/30/Docker%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E6%90%AD%E5%BB%BA/" data-id="cki8eocx30002nohxa2yy6y20" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/12/01/Docker%E6%95%99%E7%A8%8B%E8%AE%B2%E8%A7%A3/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/11/27/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/12/01/Docker%E6%95%99%E7%A8%8B%E8%AE%B2%E8%A7%A3/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/30/Docker%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E6%90%AD%E5%BB%BA/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/27/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/10/30/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
