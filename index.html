@@ -64,6 +64,497 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Dockerfile构建镜像" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/12/03/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/" class="article-date">
+  <time datetime="2020-12-03T05:59:50.000Z" itemprop="datePublished">2020-12-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/12/03/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/">Docker Dockerfile</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><h3 id="什么是-Dockerfile？"><a href="#什么是-Dockerfile？" class="headerlink" title="什么是 Dockerfile？"></a>什么是 Dockerfile？</h3><p>Dockerfile 是一个用来构建镜像的文本文件，文本内容包含了一条条构建镜像所需的指令和说明。</p>
+<h2 id="一-Dockerfile基本结构"><a href="#一-Dockerfile基本结构" class="headerlink" title="一.Dockerfile基本结构"></a>一.Dockerfile基本结构</h2><p>一般的，Dockerfile 分为四部分：基础镜像信息、维护者信息、镜像操作指令和容器启动时执行指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># This Nuxt.js Dockerfile</span></span><br><span class="line"><span class="comment"># FROM </span></span><br><span class="line">MAINTAINER Xuest</span><br><span class="line"><span class="comment"># Base images 基础镜像</span></span><br><span class="line">FROM registry.ihdou.com/node:10.15.3-alpine</span><br><span class="line"><span class="comment">#MAINTAINER 维护者信息</span></span><br><span class="line">MAINTAINER Xuest </span><br><span class="line"><span class="comment">#ENV 设置环境变量</span></span><br><span class="line">ENV NODE_ENV=production</span><br><span class="line">ENV HOST 0.0.0.0</span><br><span class="line"><span class="comment">#RUN 执行以下命令 </span></span><br><span class="line">RUN mkdir -p /social-statics-app</span><br><span class="line"><span class="comment">#COPY </span></span><br><span class="line">COPY . /social-statics-app</span><br><span class="line"><span class="comment">#WORKDIR 相当于cd</span></span><br><span class="line">WORKDIR /social-statics-app</span><br><span class="line"><span class="comment">#EXPOSE 映射端口</span></span><br><span class="line">EXPOSE 3000</span><br><span class="line">RUN npm install</span><br><span class="line">RUN npm rebuild node-sass</span><br><span class="line">RUN npm run build</span><br><span class="line">RUN npm cache clean --force</span><br><span class="line"><span class="comment">#CMD 运行以下命令</span></span><br><span class="line">CMD [<span class="string">&quot;npm&quot;</span>, <span class="string">&quot;start&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<p>1、FROM : 指定基础镜像，要在哪个镜像建立</p>
+<p>格式为 <code>FROM &lt;image&gt; 或FROM &lt;image&gt;:&lt;tag&gt; 。</code></p>
+<p>第一条指令必须为 FROM 指令。**定制的镜像都是基于 FROM 的镜像，这里的 image就是定制需要的基础镜像。后续的操作都是基于 image。</p>
+<p>2、MAINTAINER：指定维护者信息</p>
+<p>格式为 <code>MAINTAINER &lt;name&gt;</code></p>
+<p>3、RUN：在镜像中要执行的命令</p>
+<p>格式为 <code>RUN &lt;command&gt; 或 RUN [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</code>，前者将在 shell 终端中运行命令，即 /bin/bash -c ；后者则使用 exec 执行。指定使用其它终端可以通过第二种方式实现，例如 <code>RUN [“/bin/bash”, “-c”,”echo hello”]</code> 。</p>
+<p>4、WORKDIR：指定当前工作目录，相当于 cd</p>
+<p>格式为 <code>WORKDIR /path/to/workdir</code></p>
+<p>5、EXPOSE：指定容器要打开的端口</p>
+<p>格式为 <code>EXPOSE &lt;port&gt; [&lt;port&gt;...]</code>，告诉 Docker 服务端容器暴露的端口号，供互联系统使用。在启动容器时需要通过 -P，Docker 主机会自动分配一个端口转发到指定的端口。</p>
+<p>6、ENV：定义环境变量</p>
+<p>格式为 <code>ENV &lt;key&gt; &lt;value&gt;</code> 。 指定一个环境变量，会被后续 RUN 指令使用，并在容器运行时保持。</p>
+<p>ENV PATH /usr/local/nginx/sbin:$PATH</p>
+<p>7、COPY </p>
+<p>复制本地主机的 （为 Dockerfile 所在目录的相对路径）到容器中的</p>
+<p>8、ADD</p>
+<p>相当于 COPY，但是比 COPY 功能更强大</p>
+<p>格式为 <code>ADD &lt;src&gt; &lt;dest&gt;</code>，该命令将复制指定的 到容器中的 。 其中 可以是Dockerfile所在目录的一个相对路径；也可以是一个 URL；还可以是一个 tar 文件，复制进容器会自动解压。</p>
+<p>9、VOLUME</p>
+<p>挂载目录 格式为<code>VOLUME [&quot;/data&quot;]</code>，创建一个可以从本地主机或其他容器挂载的挂载点，一般用来存放数据库和需要保持的数据等。</p>
+<p>10、USER</p>
+<p>格式为 <code>USER daemon</code>，指定运行容器时的用户名或 UID，后续的 RUN 也会使用指定用户。当服务不需要管理员权限时，可以通过该命令指定运行用户。并且可以在之前创建所需要的用户，例如： RUN useradd -s /sbin/nologin -M www。</p>
+<p>11、ENTRYPOINT</p>
+<p>ENTRYPOINT [“executable”, “param1”, “param2”] ENTRYPOINT command param1 param2 （shell中执行）</p>
+<p>配置容器启动后执行的命令，并且不可被 docker run 提供的参数覆盖。每个 Dockerfile 中只能有一个 ENTRYPOINT ，当指定多个时，只有最后一个起效。</p>
+<p>12、CMD</p>
+<p>CMD [“executable”,”param1”,”param2”] 使用 exec 执行，推荐方式；CMD command param1 param2 在 /bin/bash 中执行，提供给需要交互的应用；CMD [“param1”,”param2”] 提供给 ENTRYPOINT 的默认参数；指定启动容器时执行的命令，每个 Dockerfile 只能有一条 CMD 命令。如果指定了多条命令，只有最后一条会被执行。如果用户启动容器时候指定了运行的命令，则会覆盖掉 CMD 指定的命令</p>
+<p>13、ONBUILD</p>
+<p>格式为 <code>ONBUILD [INSTRUCTION]</code>，在构建本镜像时不生效，在基于此镜像构建镜像时生效。配置当所创建的镜像作为其它新创建镜像的基础镜像时，所执行的操作指令。</p>
+<p>注意：</p>
+<p>ENTRYPOINT 和 CMD 的区别：ENTRYPOINT 指定了该镜像启动时的入口，CMD 则指定了容器启动时的命令，当两者共用时，完整的启动命令像是 ENTRYPOINT + CMD 这样。使用 ENTRYPOINT 的好处是在我们启动镜像就像是启动了一个可执行程序，在 CMD 上仅需要指定参数；另外在我们需要自定义 CMD 时不容易出错。</p>
+<p>使用 CMD 的 Dockerfile：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@sta2 test]<span class="meta"># cat Dockerfile FROM mysql CMD [<span class="meta-string">&quot;echo&quot;</span>,<span class="meta-string">&quot;test&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>使用 ENTRYPOINT 的 Dockerfile</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@sta2 entrypoint]<span class="meta">#  cat  Dockerfile FROM mysql ENTRYPOINT [<span class="meta-string">&quot;echo&quot;</span>,<span class="meta-string">&quot;test&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>结论：ENTRYPOINT 不能覆盖掉执行时的参数，CMD 可以掉覆盖默认的参数。</p>
+<p>demo</p>
+<p>Jar例子：</p>
+<p>FROM registry.ihdou.com/java8<br>LABEL maintainer Xuest<br>ADD social-search-server-1.0.0-SNAPSHOT.jar search.jar<br>EXPOSE 10014 19997<br>ENTRYPOINT [“java”,”-jar”,”search.jar”]</p>
+<p>VUE Nuxt例子：</p>
+<p>FROM registry.ihdou.com/node:10.15.3-alpine<br>MAINTAINER Xuest<br>ENV NODE_ENV=production<br>ENV HOST 0.0.0.0<br>RUN mkdir -p /social-statics-app<br>COPY . /social-statics-app<br>WORKDIR /social-statics-app<br>EXPOSE 3000<br>RUN npm install<br>RUN npm rebuild node-sass<br>RUN npm run build<br>RUN npm cache clean –force<br>CMD [“npm”, “start”]</p>
+<p>VUE静态：</p>
+<p>FROM registry.ihdou.com/tool/nginx<br>RUN mkdir /usr/share/nginx/html/v4manage<br>COPY nginx.conf /etc/nginx/nginx.conf<br>COPY ./v4manage /usr/share/nginx/html/v4manage<br>EXPOSE 80</p>
+<p>&lt;覆盖容器nginx配置&gt;</p>
+<p>nginx根目录：/usr/share/nginx/html/</p>
+<p>nginx配置地址：/etc/nginx/nginx.conf</p>
+<pre><code>        server &#123;
+                listen       80;
+                server_name  localhost;
+                root    /usr/share/nginx/html/v4manage/;
+                location / &#123;
+                        try_files $uri $uri/ @router;
+                        index  index.html index.htm;
+                &#125;
+                location @router &#123;
+                        rewrite ^.*$ /index.html last;
+                &#125;
+        &#125;</code></pre>
+<h2 id="二-创建镜像"><a href="#二-创建镜像" class="headerlink" title="二.创建镜像"></a>二.创建镜像</h2><p>1、使用Dockerfile构建镜像</p>
+<p>docker build -t v4manage .  </p>
+<p>2.给镜像打标签</p>
+<p>docker tag v4manage  192.168.102.78/4.0/ v4manage </p>
+<p>3.Push仓库</p>
+<p>docker push 192.168.102.78/4.0/ v4manage</p>
+<p>[root@k8s-master harbor]# docker tag 192.168.102.78/v4manage 192.168.102.78/4.0/v4manage<br>[root@k8s-master harbor]# docker push 192.168.102.78/4.0/v4manage<br>The push refers to repository [192.168.102.78/4.0/v4manage]<br>518ec4362654: Pushed<br>ba2c6d9de847: Pushed<br>6f40d5797506: Pushed<br>7e914612e366: Pushed<br>f790aed835ee: Pushed<br>850c2400ea4d: Pushed<br>7ccabd267c9f: Pushed<br>f5600c6330da: Pushed<br>latest: digest: sha256:9f920ab7c9e5f5b5f9673b013b2b68193ca80c0a5236d7c72484e473abe3f659 size: 1987</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/12/03/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/" data-id="cki8eocws0000nohxgf439vks" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Elasticsearch集群" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/12/03/Elasticsearch%E9%9B%86%E7%BE%A4/" class="article-date">
+  <time datetime="2020-12-03T05:59:50.000Z" itemprop="datePublished">2020-12-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/12/03/Elasticsearch%E9%9B%86%E7%BE%A4/">Elasticsearch集群搭建</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Elasticsearch集群搭建"><a href="#Elasticsearch集群搭建" class="headerlink" title="Elasticsearch集群搭建"></a>Elasticsearch集群搭建</h2><p><strong>1.1</strong> <strong>安装准备</strong></p>
+<p><strong>1.1.1**</strong>下载安装包**</p>
+<p><a target="_blank" rel="noopener" href="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.2.tar.gz">https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.2.tar.gz</a></p>
+<p><strong>1.1.2</strong> <strong>服务器准备</strong></p>
+<p>为搭建ElasticSearch集群，准备了二台服务器，主机IP分别为：</p>
+<table>
+<thead>
+<tr>
+<th><strong>服务器IP</strong></th>
+<th><strong>系统版本</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>192.168.102.151</td>
+<td>Centos7.5</td>
+</tr>
+<tr>
+<td>192.168.102.11</td>
+<td>Centos7.5</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p><strong>1.1.3</strong> <strong>新建用户</strong></p>
+<p>ES不支持root用户启动，分别使用root用户登录服务器新建es用户,并设置密码，然后给用户文件夹所有权</p>
+<p># 新增用户</p>
+<p>useradd es</p>
+<p># 设置密码</p>
+<p>passwd es</p>
+<p># 授权</p>
+<p>chown es /home/es</p>
+<p># 新建es数据文件夹和日志文件夹</p>
+<p>mkdir -p /opt/es/logs</p>
+<p>mkdir -p /opt/es/data</p>
+<p>chown es /opt/es/</p>
+<p>chown es /opt/es/logs/</p>
+<p>chown es /opt/es/data/</p>
+<p># 准备安装包</p>
+<p>1、jdk-8u144-linux-x64.tar.gz<br> 2、elasticsearch-6.2.2.tar.gz</p>
+<p><strong>1.1.4</strong> <strong>调整系统参数</strong></p>
+<p><strong>1.1.3.1</strong> <strong>内核参数调整</strong></p>
+<p>vim /etc/sysctl.conf</p>
+<p># 增加下面的内容</p>
+<p>fs.file-max = 65536</p>
+<p>vm.max_map_count = 262144</p>
+<p># 执行命令</p>
+<p>sysctl -p</p>
+<p><strong>1.1.3.2</strong> <strong>资源参数调整</strong></p>
+<p>vim /etc/security/limits.conf</p>
+<p># 修改</p>
+<p>* soft nofile 65536</p>
+<p>* hard nofile 65536</p>
+<p>* soft nproc 2048</p>
+<p>* hard nproc 4096</p>
+<p>es soft memlock unlimited</p>
+<p>es hard memlock unlimited</p>
+<p><strong>1.1.3.3</strong> <strong>调整线程数</strong></p>
+<p>vim /etc/security/limits.d/90-nproc.conf</p>
+<p>找到如下内容：</p>
+<p>* soft nproc 1024</p>
+<p>#修改为</p>
+<p>* soft nproc 2048</p>
+<p><strong>1.2 JDK**</strong>安装**</p>
+<p>登录es用户，进入/opt文件夹，解压JDK安装包<br> ES5.0以上必须1.8JDK支持</p>
+<p>cd /opt</p>
+<p>tar -zxvf /home/es/jdk-8u144-linux-x64.tar.gz</p>
+<p># 设置环境变量</p>
+<p>vim /etc/profile</p>
+<p>#在文件最下方添加</p>
+<p>export JAVA_HOME=/opt/jdk1.8.0_144</p>
+<p>export CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/*.jar</p>
+<p>export PATH=.:$JAVA_HOME/bin:$PATH</p>
+<p><strong>1.3 ES**</strong>安装及配置**</p>
+<p><strong>1.3.1</strong> <strong>解压缩</strong></p>
+<p># 切换到es用户</p>
+<p>cd /home/es</p>
+<p>tar -zxvf elasticsearch-6.2.2.tar.gz</p>
+<p><strong>1.3.2</strong> <strong>配置</strong></p>
+<p><strong>1.3.2.1 elasticsearch.yml</strong></p>
+<p>cluster.name: my-social</p>
+<p>node.name: social-151</p>
+<p>network.host: 192.168.102.151</p>
+<p>node.master: true</p>
+<p>node.data: true</p>
+<p>path.data: /opt/es/data</p>
+<p>path.logs: /opt/es/logs</p>
+<p>http.cors.enabled: true</p>
+<p>http.ors.allow-origin: “*”</p>
+<p>discovery.zen.ping.unicast.hosts: [“192.168.102.11”,”192.168.102.151”]                                  </p>
+<p># 集群名称，各个节点的值必须一致</p>
+<p>cluster.name: elasticsearch_production</p>
+<p># 节点名称，区分节点，各个节点的值不能一致</p>
+<p>node.name: node-1</p>
+<p># 数据文件路径</p>
+<p>path.data: /opt/es/data</p>
+<p># 日志文件路径</p>
+<p>path.logs: /opt/es/logs</p>
+<p># 设置为true来锁住内存。因为当jvm开始swapping时es的效率会降低，所以要保证它不swap，可以把ES_MIN_MEM和ES_MAX_MEM两个环境变量设置成同一个值，并且保证机器有足够的内存分配给es。同时也要允许elasticsearch的进程可以锁住内存，Linux下可以通过ulimit -l unlimited命令</p>
+<p>bootstrap.memory_lock: true</p>
+<p># 因为Centos6不支持SecComp，而ES5.6.4默认bootstrap.system_call_filter为true进行检测，所以导致检测失败，失败后直接导致ES不能启动</p>
+<p>bootstrap.system_call_filter: false</p>
+<p># 本机IP</p>
+<p>network.host: 192.168.6.104</p>
+<p># 单播列表</p>
+<p>discovery.zen.ping.unicast.hosts: [“192.168.102.151”, “192.168.102.11”, “192.168.102.40”]</p>
+<p># 防止脑裂，官方推荐设置成 N/2 + 1，N是集群中master节点的数量</p>
+<p>discovery.zen.minimum_master_nodes: 2</p>
+<p># 存在至少2个节点（数据节点或者 master 节点）才进行数据恢复</p>
+<p>gateway.recover_after_nodes: 2</p>
+<p># 等待10分钟，或者3个节点上线后，才进行数据恢复，这取决于哪个条件先达到</p>
+<p>gateway.expected_nodes: 3</p>
+<p>gateway.recover_after_time: 10m</p>
+<p># 禁用xpack安全认证</p>
+<p>xpack.security.enabled: false</p>
+<p><strong>1.3.2.2 jvm.options</strong></p>
+<p># 调整内存大小根据系统资源而定，最好不要超过总资源一半</p>
+<p>-Xms8g</p>
+<p>-Xmx8g</p>
+<p><strong>1.3.2.3 elasticsearch**</strong>和elasticsearch-plugin**</p>
+<p>可选步骤，如果环境变量配置JDK为1.8不需要配置，若需要多JDK共同使用则需要配置</p>
+<p>export JAVA_HOME=/opt/jdk1.8.0_144</p>
+<p>export CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/*.jar</p>
+<p>export PATH=.:$JAVA_HOME/bin:$PATH</p>
+<p><strong>1.3.4</strong> <strong>启动</strong></p>
+<p>cd /home/es/elasticsearch-6.2.2/bin</p>
+<p># 控制台启动，加 -d 参数可以后台启动</p>
+<p>./elasticsearch    </p>
+<p># 查看节点状态</p>
+<p>curl -XGET ‘192.168.102.151:9200/_cat/nodes?v’</p>
+<p># 查看集群状态</p>
+<p>curl -XGET ‘192.168.102.11:9200/_cat/health?v’</p>
+<p><strong>1.4 head**</strong>的安装**</p>
+<p>//下载源码</p>
+<p>（1）git clone git://github.com/mobz/elasticsearch-head.git</p>
+<p>//进入根目录</p>
+<p>（2）cd elasticsearch-head</p>
+<p>//安装</p>
+<p>（3）npm install</p>
+<p>//启动</p>
+<p>（4）nohup grunt server &amp;</p>
+<p>这里需要注意es5的head不再是es的插件而是需要单独作为一个服务提供，上面我们安装es时，最后两行配置属性是开启了es的跨域访问，所以head作为一个单独的服务，是可以访问es集群的。</p>
+<p>此外es5的head安装依赖nodejs环境，所以我们要安装node 步骤如下：</p>
+<p>这里采用的是下载官网编译好的二进制包直接安装</p>
+<p>（1）wget <a target="_blank" rel="noopener" href="https://nodejs.org/dist/v8.9.4/node-v8.9.4-linux-x64.tar.xz">https://nodejs.org/dist/v8.9.4/node-v8.9.4-linux-x64.tar.xz</a></p>
+<p>（2）xz -d node-v8.9.4-linux-x64.tar.xz </p>
+<p>（3）设置全局环境变量</p>
+<p>export NODE_HOME=/usr/local/node/8.9.4</p>
+<p>export PATH=$NODE_HOME/bin:$PATH</p>
+<p>（4）验证</p>
+<p>head只需要在一台es节点上安装即可</p>
+<p><strong>1.5 IK**</strong>分词器的安装**</p>
+<p>（1）下载源码</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.2.2/elasticsearch-analysis-ik-6.2.2.zip//%E8%BF%9B%E5%85%A5%E6%A0%B9%E7%9B%AE%E5%BD%95">https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.2.2/elasticsearch-analysis-ik-6.2.2.zip//进入根目录</a></p>
+<p>（2）cd elasticsearch-6.2.2 </p>
+<p>（3）./bin/elasticsearch-plugin install <a target="_blank" rel="noopener" href="https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.2.2/elasticsearch-analysis-ik-6.2.2.zip">https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.2.2/elasticsearch-analysis-ik-6.2.2.zip</a></p>
+<p>重启elasticsearch、</p>
+<p><a target="_blank" rel="noopener" href="http://192.168.102.151:9200/_analyze?analyzer=ik_max_word&amp;text=iphonex">http://192.168.102.151:9200/_analyze?analyzer=ik_max_word&amp;text=iphonex</a> &amp;pretty=true</p>
+<p>常见问题：</p>
+<p>通过手动重新分配分片（curl -XPOST esip:9200/_cluster/reroute?retry_failed=true ）解决unassigned</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/12/03/Elasticsearch%E9%9B%86%E7%BE%A4/" data-id="cki8eocx10001nohx06pj7giz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Maven知识库" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/12/03/Maven%E7%9F%A5%E8%AF%86%E5%BA%93/" class="article-date">
+  <time datetime="2020-12-03T05:59:50.000Z" itemprop="datePublished">2020-12-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/12/03/Maven%E7%9F%A5%E8%AF%86%E5%BA%93/">Maven知识库</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a>Maven</h2><h3 id="Maven的作用？"><a href="#Maven的作用？" class="headerlink" title="Maven的作用？"></a>Maven的作用？</h3><p>1.添加第三方jar包</p>
+<p>2.解决jar包之间的依赖关系</p>
+<p>3.获取第三方jar包</p>
+<p>4.将项目拆成多个工程模块</p>
+<p><strong>Maven</strong> <strong>是什么？</strong></p>
+<p>是Apache软件基金会组织维护的一款自动化构建工具，专注服务于 Java 平台的项目构建和依赖管理。</p>
+<h3 id="构建过程"><a href="#构建过程" class="headerlink" title="构建过程"></a>构建过程</h3><p>1.清理：删除以前的编译结果，为重新编译做好准备。</p>
+<p>2.编译：将 Java 源程序为字编译为节码文件。</p>
+<p>3.测试：针对项目中的关键点进行测试，确保项目在迭代开发过程中关键点的正确性。</p>
+<p>4.报告：在每一次测试后以标准的格式记录和展示测试结果</p>
+<p>5.打包：将一个包含诸多文件的工程封装为一个压缩文件用于安装或部署。Java 工程对应 jar 包，Web 工程对应 war 包。</p>
+<p>6.安装：在 Maven 环境下特指将打包的结果—— jar 包或 war 包安装到本地仓库。</p>
+<p>7.部署：将打包的结果部署到远程仓库或将 war 包部署到服务器上运行。</p>
+<h3 id="Maven-是什么？"><a href="#Maven-是什么？" class="headerlink" title="Maven 是什么？"></a>Maven 是什么？</h3><p>是Apache软件基金会组织维护的一款自动化构建工具，专注服务于 Java 平台的项目构建和依赖管理</p>
+<h3 id="Maven-核心概念"><a href="#Maven-核心概念" class="headerlink" title="Maven 核心概念"></a>Maven 核心概念</h3><p>1.POM</p>
+<p>2.约定的目录结构</p>
+<p>3.坐标</p>
+<p>4.依赖管理</p>
+<p>5.仓库管理</p>
+<p>6.生命周期</p>
+<p>7.插件和目标</p>
+<p>8.继承</p>
+<p>9.聚合</p>
+<h3 id="原理与约定"><a href="#原理与约定" class="headerlink" title="原理与约定"></a>原理与约定</h3><p>Maven 的核心程序中仅仅定义了抽象的声明周期，具体的操作是由 Maven 的插件完成的。Maven 的插件不包含在 Maven 的核心程序中，在首次使用时需要联网下载。</p>
+<p>下载的插件被保存在本地仓库，本地仓库的默认位置是：~.m2\repository</p>
+<p>约定的目录结构对于 Maven 实现自动化构建是必不可缺的一环，Maven 必须能找到 Java 源文件，编译后的字节码也有一个存储的位置，所以约定至关重要。</p>
+<p>项目</p>
+<p>  src</p>
+<p>​    main</p>
+<p>​      java</p>
+<p>​      resources</p>
+<p>​    test</p>
+<p>​      java</p>
+<p>​      resources</p>
+<p>target</p>
+<p>src：源码目录<br> main：主程序目录<br> main-&gt;java：主程序的Java源文件目录<br> main-&gt;resources：主程序的资源文件目录<br> test：测试程序目录<br> test-&gt;java：测试程序的Java源文件目录<br> test-&gt;resources：测试程序的资源文件目录</p>
+<h3 id="POM"><a href="#POM" class="headerlink" title="POM"></a>POM</h3><p>Project Object Model：项目对象模型。将 Java 工程的相关信息封装为对象作为便于操作和管理的模型。Maven 工程的核心配置。可以说学习 Maven 就是学习 pom.xml 文件中的配置。</p>
+<p><strong>Maven</strong> <strong>坐标</strong></p>
+<p>在空间中需要 x、y、z三个向量确定一个点</p>
+<p>使用如下三个向量在 Maven 的仓库中唯一的确定一个 Maven 工程(gav)。</p>
+<p>1.groupid：公司或组织的域名倒叙+当前项目名称</p>
+<p>2.artifactid：当前项目的模块名称</p>
+<p>3.version：当前模块的版本</p>
+<p><groupId>com.ihdou.maven</groupId></p>
+<p><artifactId>Hello</artifactId></p>
+<p><version>0.0.1-SNAPSHOT</version></p>
+<p>使用命令 <code>mvn install</code> 执行安装后 Maven 工程进入仓库，通过两个步骤查找 jar 包。</p>
+<p>1.将 gav 三个向量连起来</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">com. ihdou.maven+Hello+0.0.1-SNAPSHOT</span><br></pre></td></tr></table></figure>
+
+<p>2.以连起来的的字符串作为目录结构到仓库中查找</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">com&#x2F; ihdou &#x2F;maven&#x2F;Hello&#x2F;0.0.1-SNAPSHOT&#x2F;Hello-0.0.1-SNAPSHOT.jar</span><br></pre></td></tr></table></figure>
+
+<h3 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h3><p>使用 Maven 就是为了使用它的依赖功能，当 A jar 包用到了 B jar 包的某些类时，A 对 B 产生了依赖。</p>
+<p>实现依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.ihdou.maven&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;Hello&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;0.0.1-SNAPSHOT&lt;&#x2F;version&gt;</span><br><span class="line">    &lt;scope&gt;compile&lt;&#x2F;scope&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>依赖的范围有：compile(编译)、test(测试)、provided(部署)</p>
+<p>依赖的传递：A 依赖 B，B 依赖 C ，A 是否能使用 C？要看 B 依赖 C 的范围是不是 compile</p>
+<p>依赖的排除：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;com.ihdou&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;TestDB&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;version&gt;1.0.0-SNAPSHOT&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;exclusions&gt;</span><br><span class="line">            &lt;exclusion&gt;</span><br><span class="line">                &lt;groupId&gt;mysql&lt;&#x2F;groupId&gt;</span><br><span class="line">                &lt;artifactId&gt;mysql-connector-java&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;&#x2F;exclusion&gt;</span><br><span class="line">        &lt;&#x2F;exclusions&gt;</span><br><span class="line">    &lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;&#x2F;dependencies&gt;</span><br></pre></td></tr></table></figure>
+
+<p>对版本号进行统一：<br> 1.统一声明版本号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;properties&gt;</span><br><span class="line">    &lt;mysql-connector.version&gt;5.1.47&lt;&#x2F;mysql-connector.version&gt;</span><br><span class="line">&lt;&#x2F;properties&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2.引用前面声明的版本号：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;mysql&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;mysql-connector-java&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;$&#123;mysql-connector.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="仓库"><a href="#仓库" class="headerlink" title="仓库"></a>仓库</h3><p>仓库有本地仓库和远程仓库，远程仓库包含私服、中央仓库、中央仓库的镜像。</p>
+<p>仓库中存储的文件有 Maven 的插件、我们自己开发的项目的模块、第三方框架或工具的 jar 包</p>
+<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><p>Maven 生命周期定义了各个构建缓解的执行顺序，有了这个清单，Maven 就可以自动化的执行构建命令了。</p>
+<p>有3套相互独立的生命周期，分别是：</p>
+<p>\1. Clean Lifecycle 在进行真正的构建之前进行的一些清理工具。</p>
+<p>\2. Default Lifecycle 构建的核心部分，编译，测试，打包，安装部署等等。</p>
+<p>\3. Site Lifecycle 生成项目报告，站点，发布站点</p>
+<p>它们是相互独立的，你可以仅仅调用 clean 来清理工作目录，仅仅调用 site 来生成站点。也可以直接运行 mvn clean install site 运行所有这三套声明周期</p>
+<p>Clean 生命周期的阶段：</p>
+<p>\1. pre-clean 执行一些需要在 clean 之前完成的工作</p>
+<p>\2. clean 移除所有上一次构建生成的文件</p>
+<p>\3. post-clean 执行一些需要在 clean 之后立刻完成的工作</p>
+<p>Site 生命周期的阶段：</p>
+<p>\1.   pre-site 执行一些需要在生成站点文档之前完成的工作</p>
+<p>\2.   site 生成项目的站点文档</p>
+<p>\3.   post-site 执行一些需要在生成站点文档之后完成的工作，并且为部署做准备</p>
+<p>\4.   site-deploy 将生成的站点文档部署到特定的服务器上</p>
+<p>Default 生命周期的阶段</p>
+<p>Default 生命周期是 Maven 生命周期中最重要的一个，绝大部分工作都发生在这个生命周期中。这里，只解释一些比较重要和常用的阶段：</p>
+<p>validate</p>
+<p>generate-sources</p>
+<p>process-sources</p>
+<p>generate-resources</p>
+<p>process-resources 复制并处理资源文件，至目标目录，准备打包</p>
+<p>compile 编译项目的源代码</p>
+<p>process-classes</p>
+<p>generate-test-sources</p>
+<p>process-test-sources</p>
+<p>generate-test-resources</p>
+<p>process-test-resources 复制并处理资源文件，至目标测试目录</p>
+<p>test-compile 编译测试源代码</p>
+<p>process-test-classes</p>
+<p>test 使用合适的单元测试框架运行测试。这些测试代码不会被打包或部署</p>
+<p>prepare-package</p>
+<p>package 接受编译好的代码，打包成可发布的格式，如 JAR</p>
+<p>pre-integration-test</p>
+<p>integration-test</p>
+<p>verify</p>
+<p>install 将包安装至本地仓库，以让其他项目依赖</p>
+<p>deploy 将最终的包复制到远程的仓库，以让其他开发人员与项目共享或部署到服务器上运行</p>
+<p>运行任何一个阶段的时候，它前面的所有阶段都会被运行</p>
+<h3 id="插件和目标"><a href="#插件和目标" class="headerlink" title="插件和目标"></a>插件和目标</h3><p>Maven 的核心仅仅定义了抽象的声明周期，具体的任务都是交给插件完成的。</p>
+<p>每个插件都能实现多个功能，每个功能就是一个插件目标</p>
+<p>Maven 的声明周期与插件目标相互绑定，以完成某个具体的构建任务</p>
+<h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><p>非 compile 范文的依赖信息是不能在“依赖链”中传递的，所以有需要的工程只能单独配置。</p>
+<table>
+<thead>
+<tr>
+<th><strong>工程</strong></th>
+<th><strong>依赖</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hello</td>
+<td><code>&lt;dependency&gt;&lt;groupId&gt;junit&lt;/groupId&gt;&lt;artifactId&gt;junit&lt;/artifactId&gt;&lt;version&gt;4.0&lt;/version&gt;&lt;scope&gt;test&lt;/scope&gt;&lt;/dependency&gt;</code></td>
+</tr>
+<tr>
+<td>HelloFriend</td>
+<td><code>&lt;dependency&gt;&lt;groupId&gt;junit&lt;/groupId&gt;&lt;artifactId&gt;junit&lt;/artifactId&gt;&lt;version&gt;4.0&lt;/version&gt;&lt;scope&gt;test&lt;/scope&gt;&lt;/dependency&gt;</code></td>
+</tr>
+<tr>
+<td>MakeFriend</td>
+<td><code>&lt;dependency&gt;&lt;groupId&gt;junit&lt;/groupId&gt;&lt;artifactId&gt;junit&lt;/artifactId&gt;&lt;version&gt;4.0&lt;/version&gt;&lt;scope&gt;test&lt;/scope&gt;&lt;/dependency&gt;</code></td>
+</tr>
+</tbody></table>
+<p>如果将各模块的版本统一为 4.9，各个模块单独修改是不可取的，可以使用继承机制将依赖信息统一提取到父工程模块中进行统一管理。</p>
+<h4 id="实现继承"><a href="#实现继承" class="headerlink" title="实现继承"></a>实现继承</h4><p>1.创建父工程：打包方式设置为 pom</p>
+<p>2.在子工程中引用父工程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;parent&gt;</span><br><span class="line">    &lt;!-- 父工程坐标 --&gt;</span><br><span class="line">    &lt;groupId&gt;...&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;...&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;...&lt;&#x2F;version&gt;</span><br><span class="line">    &lt;relativePath&gt;从当前目录到父项目的 pom.xml文件的相对路径&lt;&#x2F;relativePath&gt;</span><br><span class="line">&lt;&#x2F;parent&gt;</span><br></pre></td></tr></table></figure>
+
+<p>如果此时子工程的 groupId 和 version 和父工程重复则可以删除</p>
+<p>3.在父工程中管理依赖<br> 将 Parent 项目中的 dependencies 标签，用 dependencyManagement 标签括起来</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencyManagement&gt;</span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;log4j&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;log4j&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.2.17&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">    &lt;&#x2F;dependencies&gt;</span><br><span class="line">&lt;&#x2F;dependencyManagement&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在子项目中重新制定需要的依赖，删除范围和版本号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> &lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;log4j&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;log4j&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;&#x2F;dependencies&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="聚合-多模块"><a href="#聚合-多模块" class="headerlink" title="聚合(多模块)"></a>聚合(多模块)</h3><p>将多个工程拆分为模块后，需要手动逐个安装到仓库后依赖才能够生效。修改源码后也需药逐个手动进行 clean 操作。而使用了聚合之后就可以批量进行 Maven 工程的安装、清理工作。</p>
+<p>配置聚合：</p>
+<p>在总的聚合工程中使用 modules/module 标签组合，指定模块工程的相对路径集合</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;modules&gt;</span><br><span class="line">    &lt;module&gt;test&lt;&#x2F;module&gt;</span><br><span class="line">    &lt;module&gt;b&lt;&#x2F;module&gt;</span><br><span class="line">&lt;&#x2F;modules&gt;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/12/03/Maven%E7%9F%A5%E8%AF%86%E5%BA%93/" data-id="cki8eocx40003nohxfe5qb4ch" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Java多线程" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="article-date">
@@ -1465,7 +1956,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">title: Docker 教程讲解</span><br><span class="line">date: 2020-12-03 13:59:50</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">title: Docker 教程讲解</span><br><span class="line">date: 2020-12-03 13:59:50</span><br></pre></td></tr></table></figure>
 
 <h2 id="Docker简介"><a href="#Docker简介" class="headerlink" title="Docker简介"></a>Docker简介</h2><p>Docker 是一个开源的应用容器引擎，基于 [Go 语言] 并遵从 Apache2.0 协议开源。</p>
 <p>Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。</p>
@@ -1701,121 +2192,29 @@
 
 
   
-    <article id="post-Dockerfile构建镜像" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/11/27/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/" class="article-date">
-  <time datetime="2020-11-27T06:02:29.142Z" itemprop="datePublished">2020-11-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">title: Docker Dockerfile</span><br><span class="line">date: 2020-12-03 13:59:50</span><br></pre></td></tr></table></figure>
-
-<h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><h3 id="什么是-Dockerfile？"><a href="#什么是-Dockerfile？" class="headerlink" title="什么是 Dockerfile？"></a>什么是 Dockerfile？</h3><p>Dockerfile 是一个用来构建镜像的文本文件，文本内容包含了一条条构建镜像所需的指令和说明。</p>
-<h2 id="一-Dockerfile基本结构"><a href="#一-Dockerfile基本结构" class="headerlink" title="一.Dockerfile基本结构"></a>一.Dockerfile基本结构</h2><p>一般的，Dockerfile 分为四部分：基础镜像信息、维护者信息、镜像操作指令和容器启动时执行指令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># This Nuxt.js Dockerfile</span></span><br><span class="line"><span class="comment"># FROM </span></span><br><span class="line">MAINTAINER Xuest</span><br><span class="line"><span class="comment"># Base images 基础镜像</span></span><br><span class="line">FROM registry.ihdou.com/node:10.15.3-alpine</span><br><span class="line"><span class="comment">#MAINTAINER 维护者信息</span></span><br><span class="line">MAINTAINER Xuest </span><br><span class="line"><span class="comment">#ENV 设置环境变量</span></span><br><span class="line">ENV NODE_ENV=production</span><br><span class="line">ENV HOST 0.0.0.0</span><br><span class="line"><span class="comment">#RUN 执行以下命令 </span></span><br><span class="line">RUN mkdir -p /social-statics-app</span><br><span class="line"><span class="comment">#COPY </span></span><br><span class="line">COPY . /social-statics-app</span><br><span class="line"><span class="comment">#WORKDIR 相当于cd</span></span><br><span class="line">WORKDIR /social-statics-app</span><br><span class="line"><span class="comment">#EXPOSE 映射端口</span></span><br><span class="line">EXPOSE 3000</span><br><span class="line">RUN npm install</span><br><span class="line">RUN npm rebuild node-sass</span><br><span class="line">RUN npm run build</span><br><span class="line">RUN npm cache clean --force</span><br><span class="line"><span class="comment">#CMD 运行以下命令</span></span><br><span class="line">CMD [<span class="string">&quot;npm&quot;</span>, <span class="string">&quot;start&quot;</span>]</span><br></pre></td></tr></table></figure>
-
-<p>1、FROM : 指定基础镜像，要在哪个镜像建立</p>
-<p>格式为 <code>FROM &lt;image&gt; 或FROM &lt;image&gt;:&lt;tag&gt; 。</code></p>
-<p>第一条指令必须为 FROM 指令。**定制的镜像都是基于 FROM 的镜像，这里的 image就是定制需要的基础镜像。后续的操作都是基于 image。</p>
-<p>2、MAINTAINER：指定维护者信息</p>
-<p>格式为 <code>MAINTAINER &lt;name&gt;</code></p>
-<p>3、RUN：在镜像中要执行的命令</p>
-<p>格式为 <code>RUN &lt;command&gt; 或 RUN [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</code>，前者将在 shell 终端中运行命令，即 /bin/bash -c ；后者则使用 exec 执行。指定使用其它终端可以通过第二种方式实现，例如 <code>RUN [“/bin/bash”, “-c”,”echo hello”]</code> 。</p>
-<p>4、WORKDIR：指定当前工作目录，相当于 cd</p>
-<p>格式为 <code>WORKDIR /path/to/workdir</code></p>
-<p>5、EXPOSE：指定容器要打开的端口</p>
-<p>格式为 <code>EXPOSE &lt;port&gt; [&lt;port&gt;...]</code>，告诉 Docker 服务端容器暴露的端口号，供互联系统使用。在启动容器时需要通过 -P，Docker 主机会自动分配一个端口转发到指定的端口。</p>
-<p>6、ENV：定义环境变量</p>
-<p>格式为 <code>ENV &lt;key&gt; &lt;value&gt;</code> 。 指定一个环境变量，会被后续 RUN 指令使用，并在容器运行时保持。</p>
-<p>ENV PATH /usr/local/nginx/sbin:$PATH</p>
-<p>7、COPY </p>
-<p>复制本地主机的 （为 Dockerfile 所在目录的相对路径）到容器中的</p>
-<p>8、ADD</p>
-<p>相当于 COPY，但是比 COPY 功能更强大</p>
-<p>格式为 <code>ADD &lt;src&gt; &lt;dest&gt;</code>，该命令将复制指定的 到容器中的 。 其中 可以是Dockerfile所在目录的一个相对路径；也可以是一个 URL；还可以是一个 tar 文件，复制进容器会自动解压。</p>
-<p>9、VOLUME</p>
-<p>挂载目录 格式为<code>VOLUME [&quot;/data&quot;]</code>，创建一个可以从本地主机或其他容器挂载的挂载点，一般用来存放数据库和需要保持的数据等。</p>
-<p>10、USER</p>
-<p>格式为 <code>USER daemon</code>，指定运行容器时的用户名或 UID，后续的 RUN 也会使用指定用户。当服务不需要管理员权限时，可以通过该命令指定运行用户。并且可以在之前创建所需要的用户，例如： RUN useradd -s /sbin/nologin -M www。</p>
-<p>11、ENTRYPOINT</p>
-<p>ENTRYPOINT [“executable”, “param1”, “param2”] ENTRYPOINT command param1 param2 （shell中执行）</p>
-<p>配置容器启动后执行的命令，并且不可被 docker run 提供的参数覆盖。每个 Dockerfile 中只能有一个 ENTRYPOINT ，当指定多个时，只有最后一个起效。</p>
-<p>12、CMD</p>
-<p>CMD [“executable”,”param1”,”param2”] 使用 exec 执行，推荐方式；CMD command param1 param2 在 /bin/bash 中执行，提供给需要交互的应用；CMD [“param1”,”param2”] 提供给 ENTRYPOINT 的默认参数；指定启动容器时执行的命令，每个 Dockerfile 只能有一条 CMD 命令。如果指定了多条命令，只有最后一条会被执行。如果用户启动容器时候指定了运行的命令，则会覆盖掉 CMD 指定的命令</p>
-<p>13、ONBUILD</p>
-<p>格式为 <code>ONBUILD [INSTRUCTION]</code>，在构建本镜像时不生效，在基于此镜像构建镜像时生效。配置当所创建的镜像作为其它新创建镜像的基础镜像时，所执行的操作指令。</p>
-<p>注意：</p>
-<p>ENTRYPOINT 和 CMD 的区别：ENTRYPOINT 指定了该镜像启动时的入口，CMD 则指定了容器启动时的命令，当两者共用时，完整的启动命令像是 ENTRYPOINT + CMD 这样。使用 ENTRYPOINT 的好处是在我们启动镜像就像是启动了一个可执行程序，在 CMD 上仅需要指定参数；另外在我们需要自定义 CMD 时不容易出错。</p>
-<p>使用 CMD 的 Dockerfile：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@sta2 test]<span class="meta"># cat Dockerfile FROM mysql CMD [<span class="meta-string">&quot;echo&quot;</span>,<span class="meta-string">&quot;test&quot;</span>]</span></span><br></pre></td></tr></table></figure>
-
-<p>使用 ENTRYPOINT 的 Dockerfile</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@sta2 entrypoint]<span class="meta">#  cat  Dockerfile FROM mysql ENTRYPOINT [<span class="meta-string">&quot;echo&quot;</span>,<span class="meta-string">&quot;test&quot;</span>]</span></span><br></pre></td></tr></table></figure>
-
-<p>结论：ENTRYPOINT 不能覆盖掉执行时的参数，CMD 可以掉覆盖默认的参数。</p>
-<p>demo</p>
-<p>Jar例子：</p>
-<p>FROM registry.ihdou.com/java8<br>LABEL maintainer Xuest<br>ADD social-search-server-1.0.0-SNAPSHOT.jar search.jar<br>EXPOSE 10014 19997<br>ENTRYPOINT [“java”,”-jar”,”search.jar”]</p>
-<p>VUE Nuxt例子：</p>
-<p>FROM registry.ihdou.com/node:10.15.3-alpine<br>MAINTAINER Xuest<br>ENV NODE_ENV=production<br>ENV HOST 0.0.0.0<br>RUN mkdir -p /social-statics-app<br>COPY . /social-statics-app<br>WORKDIR /social-statics-app<br>EXPOSE 3000<br>RUN npm install<br>RUN npm rebuild node-sass<br>RUN npm run build<br>RUN npm cache clean –force<br>CMD [“npm”, “start”]</p>
-<p>VUE静态：</p>
-<p>FROM registry.ihdou.com/tool/nginx<br>RUN mkdir /usr/share/nginx/html/v4manage<br>COPY nginx.conf /etc/nginx/nginx.conf<br>COPY ./v4manage /usr/share/nginx/html/v4manage<br>EXPOSE 80</p>
-<p>&lt;覆盖容器nginx配置&gt;</p>
-<p>nginx根目录：/usr/share/nginx/html/</p>
-<p>nginx配置地址：/etc/nginx/nginx.conf</p>
-<pre><code>        server &#123;
-                listen       80;
-                server_name  localhost;
-                root    /usr/share/nginx/html/v4manage/;
-                location / &#123;
-                        try_files $uri $uri/ @router;
-                        index  index.html index.htm;
-                &#125;
-                location @router &#123;
-                        rewrite ^.*$ /index.html last;
-                &#125;
-        &#125;</code></pre>
-<h2 id="二-创建镜像"><a href="#二-创建镜像" class="headerlink" title="二.创建镜像"></a>二.创建镜像</h2><p>1、使用Dockerfile构建镜像</p>
-<p>docker build -t v4manage .  </p>
-<p>2.给镜像打标签</p>
-<p>docker tag v4manage  192.168.102.78/4.0/ v4manage </p>
-<p>3.Push仓库</p>
-<p>docker push 192.168.102.78/4.0/ v4manage</p>
-<p>[root@k8s-master harbor]# docker tag 192.168.102.78/v4manage 192.168.102.78/4.0/v4manage<br>[root@k8s-master harbor]# docker push 192.168.102.78/4.0/v4manage<br>The push refers to repository [192.168.102.78/4.0/v4manage]<br>518ec4362654: Pushed<br>ba2c6d9de847: Pushed<br>6f40d5797506: Pushed<br>7e914612e366: Pushed<br>f790aed835ee: Pushed<br>850c2400ea4d: Pushed<br>7ccabd267c9f: Pushed<br>f5600c6330da: Pushed<br>latest: digest: sha256:9f920ab7c9e5f5b5f9673b013b2b68193ca80c0a5236d7c72484e473abe3f659 size: 1987</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2020/11/27/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/" data-id="cki8eocws0000nohxgf439vks" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
     <article id="post-Redis集群安装部署" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2020/10/30/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" class="article-date">
-  <time datetime="2020-10-30T07:43:36.238Z" itemprop="datePublished">2020-10-30</time>
+    <a href="/2020/10/03/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" class="article-date">
+  <time datetime="2020-10-03T05:59:50.000Z" itemprop="datePublished">2020-10-03</time>
 </a>
     
   </div>
   <div class="article-inner">
     
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/10/03/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">Redis集群安装部署</a>
+    </h1>
+  
+
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">title: Redis集群安装部署</span><br><span class="line">date: 2020-12-03 13:59:50</span><br></pre></td></tr></table></figure>
-
-<h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><h2 id="1-Redis下载"><a href="#1-Redis下载" class="headerlink" title="1  Redis下载"></a>1  Redis下载</h2><p>从该网站<a target="_blank" rel="noopener" href="http://www.redis.net.cn/%E4%B8%8B%E8%BD%BDredis%E7%A8%B3%E5%AE%9A%E7%89%88%E6%9C%AC[Redis">http://www.redis.net.cn/下载redis稳定版本[Redis</a> 5.0.4](<a target="_blank" rel="noopener" href="http://download.redis.io/releases/redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)%E3%80%82">http://download.redis.io/releases/redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)。</a></p>
+        <h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><h2 id="1-Redis下载"><a href="#1-Redis下载" class="headerlink" title="1  Redis下载"></a>1  Redis下载</h2><p>从该网站<a target="_blank" rel="noopener" href="http://www.redis.net.cn/%E4%B8%8B%E8%BD%BDredis%E7%A8%B3%E5%AE%9A%E7%89%88%E6%9C%AC[Redis">http://www.redis.net.cn/下载redis稳定版本[Redis</a> 5.0.4](<a target="_blank" rel="noopener" href="http://download.redis.io/releases/redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)%E3%80%82">http://download.redis.io/releases/redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)。</a></p>
 <p>模式: 三主三从</p>
 <p>5.0版本后不需要ruby支持，其底层改由C实现</p>
 <p>主从配置、leader选举由redis自己实现</p>
@@ -1867,376 +2266,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/10/30/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" data-id="cki8eocx50004nohx1y5ja1q4" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Elasticsearch集群" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/10/28/Elasticsearch%E9%9B%86%E7%BE%A4/" class="article-date">
-  <time datetime="2020-10-28T06:40:24.574Z" itemprop="datePublished">2020-10-28</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">title: Elasticsearch集群搭建</span><br><span class="line">date: 2020-12-03 13:59:50</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="Elasticsearch集群搭建"><a href="#Elasticsearch集群搭建" class="headerlink" title="Elasticsearch集群搭建"></a>Elasticsearch集群搭建</h2><p><strong>1.1</strong> <strong>安装准备</strong></p>
-<p><strong>1.1.1**</strong>下载安装包**</p>
-<p><a target="_blank" rel="noopener" href="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.2.tar.gz">https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.2.tar.gz</a></p>
-<p><strong>1.1.2</strong> <strong>服务器准备</strong></p>
-<p>为搭建ElasticSearch集群，准备了二台服务器，主机IP分别为：</p>
-<table>
-<thead>
-<tr>
-<th><strong>服务器IP</strong></th>
-<th><strong>系统版本</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>192.168.102.151</td>
-<td>Centos7.5</td>
-</tr>
-<tr>
-<td>192.168.102.11</td>
-<td>Centos7.5</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<p><strong>1.1.3</strong> <strong>新建用户</strong></p>
-<p>ES不支持root用户启动，分别使用root用户登录服务器新建es用户,并设置密码，然后给用户文件夹所有权</p>
-<p># 新增用户</p>
-<p>useradd es</p>
-<p># 设置密码</p>
-<p>passwd es</p>
-<p># 授权</p>
-<p>chown es /home/es</p>
-<p># 新建es数据文件夹和日志文件夹</p>
-<p>mkdir -p /opt/es/logs</p>
-<p>mkdir -p /opt/es/data</p>
-<p>chown es /opt/es/</p>
-<p>chown es /opt/es/logs/</p>
-<p>chown es /opt/es/data/</p>
-<p># 准备安装包</p>
-<p>1、jdk-8u144-linux-x64.tar.gz<br> 2、elasticsearch-6.2.2.tar.gz</p>
-<p><strong>1.1.4</strong> <strong>调整系统参数</strong></p>
-<p><strong>1.1.3.1</strong> <strong>内核参数调整</strong></p>
-<p>vim /etc/sysctl.conf</p>
-<p># 增加下面的内容</p>
-<p>fs.file-max = 65536</p>
-<p>vm.max_map_count = 262144</p>
-<p># 执行命令</p>
-<p>sysctl -p</p>
-<p><strong>1.1.3.2</strong> <strong>资源参数调整</strong></p>
-<p>vim /etc/security/limits.conf</p>
-<p># 修改</p>
-<p>* soft nofile 65536</p>
-<p>* hard nofile 65536</p>
-<p>* soft nproc 2048</p>
-<p>* hard nproc 4096</p>
-<p>es soft memlock unlimited</p>
-<p>es hard memlock unlimited</p>
-<p><strong>1.1.3.3</strong> <strong>调整线程数</strong></p>
-<p>vim /etc/security/limits.d/90-nproc.conf</p>
-<p>找到如下内容：</p>
-<p>* soft nproc 1024</p>
-<p>#修改为</p>
-<p>* soft nproc 2048</p>
-<p><strong>1.2 JDK**</strong>安装**</p>
-<p>登录es用户，进入/opt文件夹，解压JDK安装包<br> ES5.0以上必须1.8JDK支持</p>
-<p>cd /opt</p>
-<p>tar -zxvf /home/es/jdk-8u144-linux-x64.tar.gz</p>
-<p># 设置环境变量</p>
-<p>vim /etc/profile</p>
-<p>#在文件最下方添加</p>
-<p>export JAVA_HOME=/opt/jdk1.8.0_144</p>
-<p>export CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/*.jar</p>
-<p>export PATH=.:$JAVA_HOME/bin:$PATH</p>
-<p><strong>1.3 ES**</strong>安装及配置**</p>
-<p><strong>1.3.1</strong> <strong>解压缩</strong></p>
-<p># 切换到es用户</p>
-<p>cd /home/es</p>
-<p>tar -zxvf elasticsearch-6.2.2.tar.gz</p>
-<p><strong>1.3.2</strong> <strong>配置</strong></p>
-<p><strong>1.3.2.1 elasticsearch.yml</strong></p>
-<p>cluster.name: my-social</p>
-<p>node.name: social-151</p>
-<p>network.host: 192.168.102.151</p>
-<p>node.master: true</p>
-<p>node.data: true</p>
-<p>path.data: /opt/es/data</p>
-<p>path.logs: /opt/es/logs</p>
-<p>http.cors.enabled: true</p>
-<p>http.ors.allow-origin: “*”</p>
-<p>discovery.zen.ping.unicast.hosts: [“192.168.102.11”,”192.168.102.151”]                                  </p>
-<p># 集群名称，各个节点的值必须一致</p>
-<p>cluster.name: elasticsearch_production</p>
-<p># 节点名称，区分节点，各个节点的值不能一致</p>
-<p>node.name: node-1</p>
-<p># 数据文件路径</p>
-<p>path.data: /opt/es/data</p>
-<p># 日志文件路径</p>
-<p>path.logs: /opt/es/logs</p>
-<p># 设置为true来锁住内存。因为当jvm开始swapping时es的效率会降低，所以要保证它不swap，可以把ES_MIN_MEM和ES_MAX_MEM两个环境变量设置成同一个值，并且保证机器有足够的内存分配给es。同时也要允许elasticsearch的进程可以锁住内存，Linux下可以通过ulimit -l unlimited命令</p>
-<p>bootstrap.memory_lock: true</p>
-<p># 因为Centos6不支持SecComp，而ES5.6.4默认bootstrap.system_call_filter为true进行检测，所以导致检测失败，失败后直接导致ES不能启动</p>
-<p>bootstrap.system_call_filter: false</p>
-<p># 本机IP</p>
-<p>network.host: 192.168.6.104</p>
-<p># 单播列表</p>
-<p>discovery.zen.ping.unicast.hosts: [“192.168.102.151”, “192.168.102.11”, “192.168.102.40”]</p>
-<p># 防止脑裂，官方推荐设置成 N/2 + 1，N是集群中master节点的数量</p>
-<p>discovery.zen.minimum_master_nodes: 2</p>
-<p># 存在至少2个节点（数据节点或者 master 节点）才进行数据恢复</p>
-<p>gateway.recover_after_nodes: 2</p>
-<p># 等待10分钟，或者3个节点上线后，才进行数据恢复，这取决于哪个条件先达到</p>
-<p>gateway.expected_nodes: 3</p>
-<p>gateway.recover_after_time: 10m</p>
-<p># 禁用xpack安全认证</p>
-<p>xpack.security.enabled: false</p>
-<p><strong>1.3.2.2 jvm.options</strong></p>
-<p># 调整内存大小根据系统资源而定，最好不要超过总资源一半</p>
-<p>-Xms8g</p>
-<p>-Xmx8g</p>
-<p><strong>1.3.2.3 elasticsearch**</strong>和elasticsearch-plugin**</p>
-<p>可选步骤，如果环境变量配置JDK为1.8不需要配置，若需要多JDK共同使用则需要配置</p>
-<p>export JAVA_HOME=/opt/jdk1.8.0_144</p>
-<p>export CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/*.jar</p>
-<p>export PATH=.:$JAVA_HOME/bin:$PATH</p>
-<p><strong>1.3.4</strong> <strong>启动</strong></p>
-<p>cd /home/es/elasticsearch-6.2.2/bin</p>
-<p># 控制台启动，加 -d 参数可以后台启动</p>
-<p>./elasticsearch    </p>
-<p># 查看节点状态</p>
-<p>curl -XGET ‘192.168.102.151:9200/_cat/nodes?v’</p>
-<p># 查看集群状态</p>
-<p>curl -XGET ‘192.168.102.11:9200/_cat/health?v’</p>
-<p><strong>1.4 head**</strong>的安装**</p>
-<p>//下载源码</p>
-<p>（1）git clone git://github.com/mobz/elasticsearch-head.git</p>
-<p>//进入根目录</p>
-<p>（2）cd elasticsearch-head</p>
-<p>//安装</p>
-<p>（3）npm install</p>
-<p>//启动</p>
-<p>（4）nohup grunt server &amp;</p>
-<p>这里需要注意es5的head不再是es的插件而是需要单独作为一个服务提供，上面我们安装es时，最后两行配置属性是开启了es的跨域访问，所以head作为一个单独的服务，是可以访问es集群的。</p>
-<p>此外es5的head安装依赖nodejs环境，所以我们要安装node 步骤如下：</p>
-<p>这里采用的是下载官网编译好的二进制包直接安装</p>
-<p>（1）wget <a target="_blank" rel="noopener" href="https://nodejs.org/dist/v8.9.4/node-v8.9.4-linux-x64.tar.xz">https://nodejs.org/dist/v8.9.4/node-v8.9.4-linux-x64.tar.xz</a></p>
-<p>（2）xz -d node-v8.9.4-linux-x64.tar.xz </p>
-<p>（3）设置全局环境变量</p>
-<p>export NODE_HOME=/usr/local/node/8.9.4</p>
-<p>export PATH=$NODE_HOME/bin:$PATH</p>
-<p>（4）验证</p>
-<p>head只需要在一台es节点上安装即可</p>
-<p><strong>1.5 IK**</strong>分词器的安装**</p>
-<p>（1）下载源码</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.2.2/elasticsearch-analysis-ik-6.2.2.zip//%E8%BF%9B%E5%85%A5%E6%A0%B9%E7%9B%AE%E5%BD%95">https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.2.2/elasticsearch-analysis-ik-6.2.2.zip//进入根目录</a></p>
-<p>（2）cd elasticsearch-6.2.2 </p>
-<p>（3）./bin/elasticsearch-plugin install <a target="_blank" rel="noopener" href="https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.2.2/elasticsearch-analysis-ik-6.2.2.zip">https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.2.2/elasticsearch-analysis-ik-6.2.2.zip</a></p>
-<p>重启elasticsearch、</p>
-<p><a target="_blank" rel="noopener" href="http://192.168.102.151:9200/_analyze?analyzer=ik_max_word&amp;text=iphonex">http://192.168.102.151:9200/_analyze?analyzer=ik_max_word&amp;text=iphonex</a> &amp;pretty=true</p>
-<p>常见问题：</p>
-<p>通过手动重新分配分片（curl -XPOST esip:9200/_cluster/reroute?retry_failed=true ）解决unassigned</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2020/10/28/Elasticsearch%E9%9B%86%E7%BE%A4/" data-id="cki8eocx10001nohx06pj7giz" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Maven知识库" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/10/27/Maven%E7%9F%A5%E8%AF%86%E5%BA%93/" class="article-date">
-  <time datetime="2020-10-27T08:59:43.875Z" itemprop="datePublished">2020-10-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">title: Maven知识库</span><br><span class="line">date: 2020-12-03 13:59:50</span><br></pre></td></tr></table></figure>
-
-<h2 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a>Maven</h2><h3 id="Maven的作用？"><a href="#Maven的作用？" class="headerlink" title="Maven的作用？"></a>Maven的作用？</h3><p>1.添加第三方jar包</p>
-<p>2.解决jar包之间的依赖关系</p>
-<p>3.获取第三方jar包</p>
-<p>4.将项目拆成多个工程模块</p>
-<p><strong>Maven</strong> <strong>是什么？</strong></p>
-<p>是Apache软件基金会组织维护的一款自动化构建工具，专注服务于 Java 平台的项目构建和依赖管理。</p>
-<h3 id="构建过程"><a href="#构建过程" class="headerlink" title="构建过程"></a>构建过程</h3><p>1.清理：删除以前的编译结果，为重新编译做好准备。</p>
-<p>2.编译：将 Java 源程序为字编译为节码文件。</p>
-<p>3.测试：针对项目中的关键点进行测试，确保项目在迭代开发过程中关键点的正确性。</p>
-<p>4.报告：在每一次测试后以标准的格式记录和展示测试结果</p>
-<p>5.打包：将一个包含诸多文件的工程封装为一个压缩文件用于安装或部署。Java 工程对应 jar 包，Web 工程对应 war 包。</p>
-<p>6.安装：在 Maven 环境下特指将打包的结果—— jar 包或 war 包安装到本地仓库。</p>
-<p>7.部署：将打包的结果部署到远程仓库或将 war 包部署到服务器上运行。</p>
-<h3 id="Maven-是什么？"><a href="#Maven-是什么？" class="headerlink" title="Maven 是什么？"></a>Maven 是什么？</h3><p>是Apache软件基金会组织维护的一款自动化构建工具，专注服务于 Java 平台的项目构建和依赖管理</p>
-<h3 id="Maven-核心概念"><a href="#Maven-核心概念" class="headerlink" title="Maven 核心概念"></a>Maven 核心概念</h3><p>1.POM</p>
-<p>2.约定的目录结构</p>
-<p>3.坐标</p>
-<p>4.依赖管理</p>
-<p>5.仓库管理</p>
-<p>6.生命周期</p>
-<p>7.插件和目标</p>
-<p>8.继承</p>
-<p>9.聚合</p>
-<h3 id="原理与约定"><a href="#原理与约定" class="headerlink" title="原理与约定"></a>原理与约定</h3><p>Maven 的核心程序中仅仅定义了抽象的声明周期，具体的操作是由 Maven 的插件完成的。Maven 的插件不包含在 Maven 的核心程序中，在首次使用时需要联网下载。</p>
-<p>下载的插件被保存在本地仓库，本地仓库的默认位置是：~.m2\repository</p>
-<p>约定的目录结构对于 Maven 实现自动化构建是必不可缺的一环，Maven 必须能找到 Java 源文件，编译后的字节码也有一个存储的位置，所以约定至关重要。</p>
-<p>项目</p>
-<p>  src</p>
-<p>​    main</p>
-<p>​      java</p>
-<p>​      resources</p>
-<p>​    test</p>
-<p>​      java</p>
-<p>​      resources</p>
-<p>target</p>
-<p>src：源码目录<br> main：主程序目录<br> main-&gt;java：主程序的Java源文件目录<br> main-&gt;resources：主程序的资源文件目录<br> test：测试程序目录<br> test-&gt;java：测试程序的Java源文件目录<br> test-&gt;resources：测试程序的资源文件目录</p>
-<h3 id="POM"><a href="#POM" class="headerlink" title="POM"></a>POM</h3><p>Project Object Model：项目对象模型。将 Java 工程的相关信息封装为对象作为便于操作和管理的模型。Maven 工程的核心配置。可以说学习 Maven 就是学习 pom.xml 文件中的配置。</p>
-<p><strong>Maven</strong> <strong>坐标</strong></p>
-<p>在空间中需要 x、y、z三个向量确定一个点</p>
-<p>使用如下三个向量在 Maven 的仓库中唯一的确定一个 Maven 工程(gav)。</p>
-<p>1.groupid：公司或组织的域名倒叙+当前项目名称</p>
-<p>2.artifactid：当前项目的模块名称</p>
-<p>3.version：当前模块的版本</p>
-<p><groupId>com.ihdou.maven</groupId></p>
-<p><artifactId>Hello</artifactId></p>
-<p><version>0.0.1-SNAPSHOT</version></p>
-<p>使用命令 <code>mvn install</code> 执行安装后 Maven 工程进入仓库，通过两个步骤查找 jar 包。</p>
-<p>1.将 gav 三个向量连起来</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">com. ihdou.maven+Hello+0.0.1-SNAPSHOT</span><br></pre></td></tr></table></figure>
-
-<p>2.以连起来的的字符串作为目录结构到仓库中查找</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">com&#x2F; ihdou &#x2F;maven&#x2F;Hello&#x2F;0.0.1-SNAPSHOT&#x2F;Hello-0.0.1-SNAPSHOT.jar</span><br></pre></td></tr></table></figure>
-
-<h3 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h3><p>使用 Maven 就是为了使用它的依赖功能，当 A jar 包用到了 B jar 包的某些类时，A 对 B 产生了依赖。</p>
-<p>实现依赖：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.ihdou.maven&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;Hello&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;0.0.1-SNAPSHOT&lt;&#x2F;version&gt;</span><br><span class="line">    &lt;scope&gt;compile&lt;&#x2F;scope&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
-
-<p>依赖的范围有：compile(编译)、test(测试)、provided(部署)</p>
-<p>依赖的传递：A 依赖 B，B 依赖 C ，A 是否能使用 C？要看 B 依赖 C 的范围是不是 compile</p>
-<p>依赖的排除：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;com.ihdou&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;TestDB&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;version&gt;1.0.0-SNAPSHOT&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;exclusions&gt;</span><br><span class="line">            &lt;exclusion&gt;</span><br><span class="line">                &lt;groupId&gt;mysql&lt;&#x2F;groupId&gt;</span><br><span class="line">                &lt;artifactId&gt;mysql-connector-java&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;&#x2F;exclusion&gt;</span><br><span class="line">        &lt;&#x2F;exclusions&gt;</span><br><span class="line">    &lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;&#x2F;dependencies&gt;</span><br></pre></td></tr></table></figure>
-
-<p>对版本号进行统一：<br> 1.统一声明版本号</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;properties&gt;</span><br><span class="line">    &lt;mysql-connector.version&gt;5.1.47&lt;&#x2F;mysql-connector.version&gt;</span><br><span class="line">&lt;&#x2F;properties&gt;</span><br></pre></td></tr></table></figure>
-
-<p>2.引用前面声明的版本号：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;mysql&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;mysql-connector-java&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;$&#123;mysql-connector.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="仓库"><a href="#仓库" class="headerlink" title="仓库"></a>仓库</h3><p>仓库有本地仓库和远程仓库，远程仓库包含私服、中央仓库、中央仓库的镜像。</p>
-<p>仓库中存储的文件有 Maven 的插件、我们自己开发的项目的模块、第三方框架或工具的 jar 包</p>
-<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><p>Maven 生命周期定义了各个构建缓解的执行顺序，有了这个清单，Maven 就可以自动化的执行构建命令了。</p>
-<p>有3套相互独立的生命周期，分别是：</p>
-<p>\1. Clean Lifecycle 在进行真正的构建之前进行的一些清理工具。</p>
-<p>\2. Default Lifecycle 构建的核心部分，编译，测试，打包，安装部署等等。</p>
-<p>\3. Site Lifecycle 生成项目报告，站点，发布站点</p>
-<p>它们是相互独立的，你可以仅仅调用 clean 来清理工作目录，仅仅调用 site 来生成站点。也可以直接运行 mvn clean install site 运行所有这三套声明周期</p>
-<p>Clean 生命周期的阶段：</p>
-<p>\1. pre-clean 执行一些需要在 clean 之前完成的工作</p>
-<p>\2. clean 移除所有上一次构建生成的文件</p>
-<p>\3. post-clean 执行一些需要在 clean 之后立刻完成的工作</p>
-<p>Site 生命周期的阶段：</p>
-<p>\1.   pre-site 执行一些需要在生成站点文档之前完成的工作</p>
-<p>\2.   site 生成项目的站点文档</p>
-<p>\3.   post-site 执行一些需要在生成站点文档之后完成的工作，并且为部署做准备</p>
-<p>\4.   site-deploy 将生成的站点文档部署到特定的服务器上</p>
-<p>Default 生命周期的阶段</p>
-<p>Default 生命周期是 Maven 生命周期中最重要的一个，绝大部分工作都发生在这个生命周期中。这里，只解释一些比较重要和常用的阶段：</p>
-<p>validate</p>
-<p>generate-sources</p>
-<p>process-sources</p>
-<p>generate-resources</p>
-<p>process-resources 复制并处理资源文件，至目标目录，准备打包</p>
-<p>compile 编译项目的源代码</p>
-<p>process-classes</p>
-<p>generate-test-sources</p>
-<p>process-test-sources</p>
-<p>generate-test-resources</p>
-<p>process-test-resources 复制并处理资源文件，至目标测试目录</p>
-<p>test-compile 编译测试源代码</p>
-<p>process-test-classes</p>
-<p>test 使用合适的单元测试框架运行测试。这些测试代码不会被打包或部署</p>
-<p>prepare-package</p>
-<p>package 接受编译好的代码，打包成可发布的格式，如 JAR</p>
-<p>pre-integration-test</p>
-<p>integration-test</p>
-<p>verify</p>
-<p>install 将包安装至本地仓库，以让其他项目依赖</p>
-<p>deploy 将最终的包复制到远程的仓库，以让其他开发人员与项目共享或部署到服务器上运行</p>
-<p>运行任何一个阶段的时候，它前面的所有阶段都会被运行</p>
-<h3 id="插件和目标"><a href="#插件和目标" class="headerlink" title="插件和目标"></a>插件和目标</h3><p>Maven 的核心仅仅定义了抽象的声明周期，具体的任务都是交给插件完成的。</p>
-<p>每个插件都能实现多个功能，每个功能就是一个插件目标</p>
-<p>Maven 的声明周期与插件目标相互绑定，以完成某个具体的构建任务</p>
-<h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><p>非 compile 范文的依赖信息是不能在“依赖链”中传递的，所以有需要的工程只能单独配置。</p>
-<table>
-<thead>
-<tr>
-<th><strong>工程</strong></th>
-<th><strong>依赖</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Hello</td>
-<td><code>&lt;dependency&gt;&lt;groupId&gt;junit&lt;/groupId&gt;&lt;artifactId&gt;junit&lt;/artifactId&gt;&lt;version&gt;4.0&lt;/version&gt;&lt;scope&gt;test&lt;/scope&gt;&lt;/dependency&gt;</code></td>
-</tr>
-<tr>
-<td>HelloFriend</td>
-<td><code>&lt;dependency&gt;&lt;groupId&gt;junit&lt;/groupId&gt;&lt;artifactId&gt;junit&lt;/artifactId&gt;&lt;version&gt;4.0&lt;/version&gt;&lt;scope&gt;test&lt;/scope&gt;&lt;/dependency&gt;</code></td>
-</tr>
-<tr>
-<td>MakeFriend</td>
-<td><code>&lt;dependency&gt;&lt;groupId&gt;junit&lt;/groupId&gt;&lt;artifactId&gt;junit&lt;/artifactId&gt;&lt;version&gt;4.0&lt;/version&gt;&lt;scope&gt;test&lt;/scope&gt;&lt;/dependency&gt;</code></td>
-</tr>
-</tbody></table>
-<p>如果将各模块的版本统一为 4.9，各个模块单独修改是不可取的，可以使用继承机制将依赖信息统一提取到父工程模块中进行统一管理。</p>
-<h4 id="实现继承"><a href="#实现继承" class="headerlink" title="实现继承"></a>实现继承</h4><p>1.创建父工程：打包方式设置为 pom</p>
-<p>2.在子工程中引用父工程</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;parent&gt;</span><br><span class="line">    &lt;!-- 父工程坐标 --&gt;</span><br><span class="line">    &lt;groupId&gt;...&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;...&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;...&lt;&#x2F;version&gt;</span><br><span class="line">    &lt;relativePath&gt;从当前目录到父项目的 pom.xml文件的相对路径&lt;&#x2F;relativePath&gt;</span><br><span class="line">&lt;&#x2F;parent&gt;</span><br></pre></td></tr></table></figure>
-
-<p>如果此时子工程的 groupId 和 version 和父工程重复则可以删除</p>
-<p>3.在父工程中管理依赖<br> 将 Parent 项目中的 dependencies 标签，用 dependencyManagement 标签括起来</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencyManagement&gt;</span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;log4j&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;log4j&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.2.17&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">    &lt;&#x2F;dependencies&gt;</span><br><span class="line">&lt;&#x2F;dependencyManagement&gt;</span><br></pre></td></tr></table></figure>
-
-<p>在子项目中重新制定需要的依赖，删除范围和版本号</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> &lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;log4j&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;log4j&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;&#x2F;dependencies&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="聚合-多模块"><a href="#聚合-多模块" class="headerlink" title="聚合(多模块)"></a>聚合(多模块)</h3><p>将多个工程拆分为模块后，需要手动逐个安装到仓库后依赖才能够生效。修改源码后也需药逐个手动进行 clean 操作。而使用了聚合之后就可以批量进行 Maven 工程的安装、清理工作。</p>
-<p>配置聚合：</p>
-<p>在总的聚合工程中使用 modules/module 标签组合，指定模块工程的相对路径集合</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;modules&gt;</span><br><span class="line">    &lt;module&gt;test&lt;&#x2F;module&gt;</span><br><span class="line">    &lt;module&gt;b&lt;&#x2F;module&gt;</span><br><span class="line">&lt;&#x2F;modules&gt;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2020/10/27/Maven%E7%9F%A5%E8%AF%86%E5%BA%93/" data-id="cki8eocx40003nohxfe5qb4ch" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/10/03/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" data-id="cki8eocx50004nohx1y5ja1q4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -2277,23 +2307,23 @@
       <ul>
         
           <li>
+            <a href="/2020/12/03/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/">Docker Dockerfile</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/03/Elasticsearch%E9%9B%86%E7%BE%A4/">Elasticsearch集群搭建</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/03/Maven%E7%9F%A5%E8%AF%86%E5%BA%93/">Maven知识库</a>
+          </li>
+        
+          <li>
             <a href="/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程讲解</a>
           </li>
         
           <li>
             <a href="/2020/12/03/Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">Docker 命令大全</a>
-          </li>
-        
-          <li>
-            <a href="/2020/12/01/Docker%E6%95%99%E7%A8%8B%E8%AE%B2%E8%A7%A3/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/30/Docker%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E6%90%AD%E5%BB%BA/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/27/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/">(no title)</a>
           </li>
         
       </ul>
