@@ -64,6 +64,269 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Java多线程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="article-date">
+  <time datetime="2020-12-03T05:59:50.000Z" itemprop="datePublished">2020-12-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程讲解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="1-查看线程信息："><a href="#1-查看线程信息：" class="headerlink" title="1.查看线程信息："></a>1.查看线程信息：</h4><ul>
+<li><p>方法1：</p>
+<p>   jps</p>
+<p>   <u><del>top -H -p 进程id</del></u></p>
+</li>
+<li><p>方法2：</p>
+<p> jstack 进程id</p>
+</li>
+<li><p>方法3  </p>
+<p>jconsonle  ， jvisualvm</p>
+</li>
+</ul>
+<p>  cd /usr/local/</p>
+<p>  java -Djava.rmi.server.hostname=192.168.102.19 -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=12345 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false  Thread01</p>
+<h4 id="2-线程状态"><a href="#2-线程状态" class="headerlink" title="2.线程状态"></a>2.线程状态</h4><ul>
+<li>操作系统层面：5种<img src="./images/1604372609431.png" alt="1604372609431"></li>
+</ul>
+<p>【初始状态】：创建了线程对象</p>
+<p>【可运行状态】：（就绪状态）线程对象创建后，该状态的线程位于可运行线程池中，等待调度，获取cpu 的使用权 。</p>
+<p>【运行状态】：可运行状态的线程获得了cpu 时间片 ，执行程序代码。</p>
+<p>​    ·当CPU时间片用完，会从【运行状态】转换至【可运行状态】，会导致线程的上下文切换。</p>
+<p>【阻塞状态】：阻塞状态是指线程因为某种原因放弃了cpu 使用权，让出了cpu时间片，暂时停止运行。直到线程进入可运行)状态，才有机会再次获得cpu时间片转到运行状态。</p>
+<ul>
+<li><p>(一). 等待阻塞：运行(running)的线程执行o.wait()方法，JVM会把该线程放入等待队列(waitting queue)中。</p>
+</li>
+<li><p>(二). 同步阻塞：运行(running)的线程在获取对象的同步锁时，若该同步锁被别的线程占用，则JVM会把该线程放入锁池(lock pool)中。</p>
+</li>
+<li><p>(三). 其他阻塞：运行(running)的线程执行Thread.sleep(long ms)或t.join()方法，或者发出了I/O请求时，JVM会把该线程置为阻塞状态。当sleep()状态超时、join()等待线程终止或者超时、或者I/O处理完毕时，线程重新转入可运行(runnable)状态。</p>
+<p> ·对阻塞状态的线程来说只要他们一直不被唤醒，调度器就一直不回考虑调度他们。</p>
+</li>
+</ul>
+<p>【中止状态】：线程执行完毕，生命周期结束，不会再转换为其他状态。</p>
+<ul>
+<li>根据Thread.State枚举，分为6种状态。</li>
+</ul>
+<p><img src="./images/1604375157493.png" alt="1604375157493"></p>
+<p>1.初始(NEW)：新创建了一个线程对象，但还没有调用start()方法。</p>
+<p>2.运行(RUNNABLE)：调用了start方法后，Java线程中将就绪（ready）和运行中（running）两种状态笼统的称为“运行”。</p>
+<p>线程对象创建后，其他线程(比如main线程）调用了该对象的start()方法。该状态涵盖了操作系统层面的【可运行状态】，【运行状态】和【阻塞状态】(由于BIO导致的线程阻塞，在java中无法区分，仍然认为是可运行。)</p>
+<p>3.阻塞(BLOCKED)：表示线程阻塞于锁。</p>
+<p>4.等待(WAITING)：进入该状态的线程需要等待其他线程做出一些特定动作（通知或中断）。</p>
+<p>5.超时等待(TIMED_WAITING)：该状态不同于WAITING，它可以在指定的时间后自行返回。</p>
+<p>6.终止(TERMINATED)：表示该线程已经执行完毕。</p>
+<p>————-StateTest—————</p>
+<h4 id="3-守护线程"><a href="#3-守护线程" class="headerlink" title="3.守护线程"></a>3.守护线程</h4><p>默认情况下，Java进程需要等待所有线程都运行结束，才会结束。有一种特殊的线程叫做守护线程，只要其他非守护线程运行结束了，即使守护线程的代码没有执行完，也会强制结束。</p>
+<p>也就是说，如果没有普通线程，那么守护线程也没有存活下去的意义了。</p>
+<p>垃圾回收器线程就是 一种守护线程。</p>
+<p>————-DaemonTest—————</p>
+<h4 id="4-线程上下文切换（Thread-Context-Switch）"><a href="#4-线程上下文切换（Thread-Context-Switch）" class="headerlink" title="4.线程上下文切换（Thread Context Switch）"></a>4.线程上下文切换（Thread Context Switch）</h4><p>因为以下一些原因，导致cpu不再执行当前线程，转而执行另一个线程的代码：</p>
+<ul>
+<li>线程cpu时间片用完（被动）</li>
+<li>垃圾回收（被动）</li>
+<li>有更高优先级线程执行（被动）</li>
+<li>线程自己调用了sleep，wait，yield，join，park，synchronized，lock等方法（主动）</li>
+</ul>
+<p>当context switch发生时，需要操作系统保存当前线程的状态，并恢复另一个线程的状态。</p>
+<p>context switch频繁发生会影响性能。</p>
+<h4 id="5-常见方法"><a href="#5-常见方法" class="headerlink" title="5.常见方法"></a>5.常见方法</h4><p><img src="./images/1604393649085.png" alt="1604393649085"></p>
+<p><img src="./images/1604393753556.png" alt="1604393753556"></p>
+<ul>
+<li><h5 id="sleep-amp-yield"><a href="#sleep-amp-yield" class="headerlink" title="sleep&amp;yield"></a>sleep&amp;yield</h5></li>
+</ul>
+<p><img src="./images/1604395158808.png" alt="1604395158808"></p>
+<p>​    3.yield()方法的作用是放弃当前的CPU资源，让其 他任务去占用CPU执行时间，放弃的时间不确定， 有可能刚刚放弃，马上又获得CPU时间片。</p>
+<ul>
+<li><h5 id="join"><a href="#join" class="headerlink" title="join"></a>join</h5></li>
+</ul>
+<p>如果一个线程A执行了thread.join()语句，其含义是：当前线程A等待thread线程终止之后才 从thread.join()返回。线程Thread除了提供join()方法之外，还提供了join(long millis)和join(long millis,int nanos)两个具备超时特性的方法。这两个超时方法表示，如果线程thread在给定的超时时间里没有终止，那么将会从该超时方法中返回。</p>
+<p>体现了多线程中同步的应用，即调用方需要等待线程的结果。</p>
+<ul>
+<li><h5 id="interrupt"><a href="#interrupt" class="headerlink" title="interrupt"></a>interrupt</h5></li>
+</ul>
+<ol>
+<li><p>打断sleep，wait，join的线程</p>
+</li>
+<li><p>通过调用一个线程的 interrupt() 来中断该线程，如果该线程处于阻塞、限期等待或者无限期等待状态，那么就会抛出 InterruptedException，从而提前结束该线程。（打断标记:false）</p>
+<p>———-InterruptTest01——————–</p>
+</li>
+<li><p>如果一个线程的 run() 方法执行一个无限循环，并且没有执行 sleep() 等会抛出 InterruptedException 的操作，调用 interrupt() 方法会设置线程的中断标记，此时调用 interrupted() 方法会返回 true。因此可以在循环体中使用 interrupted() 方法来判断线程是否处于中断状态，从而提前结束线程。（打断标记:true）</p>
+<p>————InterruptTest02———————–</p>
+</li>
+</ol>
+<h4 id="6-两阶段终止模式—interrupt实现"><a href="#6-两阶段终止模式—interrupt实现" class="headerlink" title="6.两阶段终止模式—interrupt实现"></a>6.两阶段终止模式—interrupt实现</h4><ul>
+<li>当我们想要结束一个线程时候，通过此模式可以优雅安全的关闭线程，让线程可以完成它本应完成的当前任务并可以附加一些收尾工作后再进行关闭</li>
+<li>是一种线程设计模式，并不在传统23中设计模式中</li>
+<li>此模式下关闭线程会有一定延迟，主要在于被关闭线程需要执行完后，再进行关闭</li>
+</ul>
+<ul>
+<li>​     错误方式</li>
+</ul>
+<p><img src="./images/1604404899459.png" alt="1604404899459"></p>
+<ul>
+<li>模拟场景—监控处理</li>
+</ul>
+<p><img src="./images/1604458290894.png"></p>
+<p>———————–TwoPhaseTerminationTest————————</p>
+<h4 id="7-锁"><a href="#7-锁" class="headerlink" title="7.锁"></a>7.锁</h4><h5 id="7-1-临界区："><a href="#7-1-临界区：" class="headerlink" title="7.1 临界区："></a>7.1 临界区：</h5><p>一段代码内如果存在对共享资源的的多线程读写操作，称这段代码为临界区。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> counter = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">increament</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">    <span class="comment">// 临界区</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    count++;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">decreament</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">      <span class="comment">// 临界区</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    count--;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="7-2竞态条件"><a href="#7-2竞态条件" class="headerlink" title="7.2竞态条件"></a>7.2竞态条件</h5><p>多个线程在临界区内执行，由于代码的<strong>执行序列不同</strong>而导致结果无法预测，称之为发生了<strong>竞态条件</strong></p>
+<p>例：</p>
+<p>——————SynTest01——-查看字节码————</p>
+<ul>
+<li>当前线程获得锁后，执行临界区代码；执行中其他线程进入临界区时则进入阻塞；指到当前线程释放锁</li>
+</ul>
+<h5 id="7-3方法上synchronized"><a href="#7-3方法上synchronized" class="headerlink" title="7.3方法上synchronized"></a>7.3方法上synchronized</h5><p>synchronized是指在对象上加锁。</p>
+<p>synchronized(lock): 是指对lock对象加锁</p>
+<p>synchronized(this): 是指对当前对象加锁</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">等价于</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span>(<span class="keyword">this</span>)&#123;</span><br><span class="line">        </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">等价于</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span>(Test.class)&#123;</span><br><span class="line">        </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="7-4-Java对象头"><a href="#7-4-Java对象头" class="headerlink" title="7.4 Java对象头"></a>7.4 Java对象头</h5><ul>
+<li>Java对象由 Java对象头和成员变量组成</li>
+</ul>
+<p>对象头以32位虚拟机为例：</p>
+<p>普通对象</p>
+<p>​      <img src="./images/1604481085895.png" alt="1604481085895"></p>
+<p>数组对象    <img src="./images/1604481118286.png" alt="1604481118286"></p>
+<p>其中Mark Word结构为</p>
+<p><img src="./images/1604481424575.png" alt="1604481424575"></p>
+<h5 id="7-5-Monitor"><a href="#7-5-Monitor" class="headerlink" title="7.5 Monitor"></a>7.5 Monitor</h5><p>Monitor被翻译为<strong>监视器</strong>或<strong>管程</strong>，是java synchronized锁的底层原理</p>
+<p>每个Java对象都可以关联一个Monitor对象，当使用synchronized给对象上锁（重量级）之后，该对象头的Mark Word就被设置指向Monitor的指针。</p>
+<p>Monitor结构如下</p>
+<p><img src="./images/1604483026018.png" alt="1604483026018"></p>
+<p><img src="./images/1604488793391.png" alt="1604488793391"></p>
+<p><a target="_blank" rel="noopener" href="https://www.processon.com/diagraming/5fa279bc0791291e95ccb764">https://www.processon.com/diagraming/5fa279bc0791291e95ccb764</a></p>
+<h5 id="7-6-synchronized字节码"><a href="#7-6-synchronized字节码" class="headerlink" title="7.6 synchronized字节码"></a>7.6 synchronized字节码</h5><p>———————————-SynTest01————————————–</p>
+<h5 id="7-7-轻量级锁"><a href="#7-7-轻量级锁" class="headerlink" title="7.7 轻量级锁"></a>7.7 轻量级锁</h5><p>轻量级锁的使用场景：如果一个对象虽然有多线程要加锁，但加锁的时间是错开的（也就是没有竞争），那么可以使用轻量级锁来优化。</p>
+<p>轻量级锁对使用者是透明的，预发仍然是synchronized。</p>
+<p>假设有两个方法同步块，利用同一个对象加锁。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> Object obj = <span class="keyword">new</span> Object();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">synchronized</span> (obj) &#123;</span><br><span class="line">    <span class="comment">// 同步代码块1</span></span><br><span class="line">    method2();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">synchronized</span> (obj) &#123;</span><br><span class="line">    <span class="comment">// 同步代码块2</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="./images/1604557850274.png" alt="1604557850274"></p>
+<p><img src="./images/1604558071476.png" alt="1604558071476"></p>
+<p><img src="./images/1604558466280.png" alt="1604558466280"></p>
+<p><img src="./images/1604558746983.png" alt="1604558746983"></p>
+<p><img src="./images/1604558916004.png" alt="1604558916004"></p>
+<p><img src="./images/1604559023468.png" alt="1604559023468"></p>
+<h5 id="7-8-锁膨胀"><a href="#7-8-锁膨胀" class="headerlink" title="7.8 锁膨胀"></a>7.8 锁膨胀</h5><p>如果在尝试加轻量级锁的过程中，CAS操作无法成功，这时一种情况就是有其它线程为此对象加上了轻量级锁（有竞争），这是需要进行锁膨胀，将轻量级锁升级成重量级锁。</p>
+<p><img src="./images/1604560081669.png" alt="1604560081669"></p>
+<p><img src="./images/1604560207271.png" alt="1604560207271"></p>
+<p><img src="./images/1604560393452.png" alt="1604560393452"></p>
+<h5 id="7-9-自旋优化"><a href="#7-9-自旋优化" class="headerlink" title="7.9 自旋优化"></a>7.9 自旋优化</h5><p><img src="./images/1604560802387.png" alt="1604560802387"></p>
+<p><img src="./images/1604560904235.png" alt="1604560904235"></p>
+<p><img src="./images/1604560935146.png" alt="1604560935146"></p>
+<h5 id="7-10-偏向锁"><a href="#7-10-偏向锁" class="headerlink" title="7.10 偏向锁"></a>7.10 偏向锁</h5><p>轻量级锁在没有竞争时(就自己这个线程)，每次锁冲入仍然要执行CAS操作。</p>
+<p>JAVA6中引入偏向锁来做进一步优化：只有第一次使用CAS将线程ID设置到对象的Mark Word头，之后发现这个线程ID时自己的就表示没有竞争，不用重新CAS，以后只要不发生竞争，这个对象锁就归该线程所有。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> Object obj = <span class="keyword">new</span> Object();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">synchronized</span> (obj) &#123;</span><br><span class="line">    <span class="comment">// 同步代码块1</span></span><br><span class="line">    method2();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">synchronized</span> (obj) &#123;<span class="comment">//------------锁重入</span></span><br><span class="line">    <span class="comment">// 同步代码块2</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="7-10-1-偏向状态"><a href="#7-10-1-偏向状态" class="headerlink" title="7.10.1 偏向状态"></a>7.10.1 偏向状态</h6><p><img src="./images/1604565305465.png" alt="1604565305465"></p>
+<p>一个对象创建时：</p>
+<ul>
+<li>如果开启了偏向锁(默认开启)，那么对象创建后，markword值为0x05，即最后3位为<strong>101</strong>，这时它的thread，epoch，age都为0</li>
+<li>偏向锁默认是有延迟的，不会再程序启动时立即生效，如果想避免延迟，可以加VM参数：-XX:BiasedLockingStartupDelay=0来禁用延迟。</li>
+<li>如果没有开启偏向锁，那么对象创建后，markword的值为0x01，即最后3位为<strong>001</strong>，这时它的hashcode，age都为0，第一次用到hashcode时才会赋值</li>
+</ul>
+<p>——————–BiasedTest01——-验证对象创建mark头数据，vm参数等———–</p>
+<p>——————–BiasedTest02——–验证加锁前后mark头数据———-</p>
+<h6 id="7-10-2-撤销-调用hashcode"><a href="#7-10-2-撤销-调用hashcode" class="headerlink" title="7.10.2 撤销-调用hashcode"></a>7.10.2 撤销-调用hashcode</h6><p>测试hashcode ：thread+hashcode&gt;64位</p>
+<p>——————–BiasedTest02——–验证hashcode加锁前后mark头数据———-</p>
+<h6 id="7-10-3-撤销-其他线程使用对象"><a href="#7-10-3-撤销-其他线程使用对象" class="headerlink" title="7.10.3 撤销-其他线程使用对象"></a>7.10.3 撤销-其他线程使用对象</h6><p>当有其它线程使用偏向锁对象时，会将偏向锁升级为轻量级锁</p>
+<p>——————–BiasedTest03——–</p>
+<h6 id="7-10-4-撤销-调用wait-notify"><a href="#7-10-4-撤销-调用wait-notify" class="headerlink" title="7.10.4 撤销-调用wait/notify"></a>7.10.4 撤销-调用wait/notify</h6><h6 id="7-10-5-批量重偏向"><a href="#7-10-5-批量重偏向" class="headerlink" title="7.10.5 批量重偏向"></a>7.10.5 批量重偏向</h6><p>如果对象虽然被多个线程访问，但没有竞争，这时偏向了T1的线程仍有机会重新偏向T2，重偏向会重置对象的Thread ID</p>
+<p>当撤销偏向锁阈值达到20次后，jvm会觉得，自己是不是偏向错了，于是会再给这些对象加锁时，重新偏向至加锁线程。</p>
+<p>——————–BiasedTest04——–</p>
+<h6 id="7-10-6-批量撤销"><a href="#7-10-6-批量撤销" class="headerlink" title="7.10.6 批量撤销"></a>7.10.6 批量撤销</h6><p>当撤销偏向锁阈值达到40次后，jvm会觉得，自己确实偏向错了，根本就不该偏向。于是整个类的所有对象都会变为不可偏向的。新建的对象也是不可偏向的。</p>
+<p>——————–BiasedTest05——–</p>
+<h5 id="7-11-锁消除"><a href="#7-11-锁消除" class="headerlink" title="7.11 锁消除"></a>7.11 锁消除</h5><p>锁消除是发生在编译器级别的一种锁优化方式。<br>有时候我们写的代码完全不需要加锁，却执行了加锁操作。</p>
+<p>JIT即时编译器，会对热点代码进行优化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> x = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method01</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Object o = <span class="keyword">new</span> Object();</span><br><span class="line">        <span class="keyword">synchronized</span>(o) &#123;<span class="comment">// 对方法内对象变量加锁，不会发生任何竞争，JIT即时编译器去将锁去掉</span></span><br><span class="line">            x++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>锁消除默认时打开的，可以通过 -XX:-EliminateLocks 去掉</p>
+<h5 id="7-11-死锁"><a href="#7-11-死锁" class="headerlink" title="7.11 死锁"></a>7.11 死锁</h5><h6 id="7-11-1-定义"><a href="#7-11-1-定义" class="headerlink" title="7.11.1 定义"></a>7.11.1 定义</h6><p>存在这样的情况，一个线程同时获取多把锁，这时就容易产生死锁。</p>
+<p>   线程1获得A对象锁，接下来想获取B对象锁</p>
+<p>   线程2获得B对象锁，接下来想获取A对象锁</p>
+<p>———————–DeadLockTest———————————-</p>
+<h6 id="7-11-2-死锁定位"><a href="#7-11-2-死锁定位" class="headerlink" title="7.11.2 死锁定位"></a>7.11.2 死锁定位</h6><ul>
+<li><p>命令行工具</p>
+<p>   jps</p>
+<p>  jstack 进程id</p>
+</li>
+<li><p>jconsonle  ， jvisualvm</p>
+</li>
+</ul>
+<h6 id="7-11-3-死锁现象-哲学家就餐"><a href="#7-11-3-死锁现象-哲学家就餐" class="headerlink" title="7.11.3 死锁现象-哲学家就餐"></a>7.11.3 死锁现象-哲学家就餐</h6><p><img src="./images/1604891663452.png" alt="1604891663452"></p>
+<p>——————-DeadLockEatTest———————–</p>
+<h4 id="8-ReentrantLock"><a href="#8-ReentrantLock" class="headerlink" title="8.ReentrantLock"></a>8.ReentrantLock</h4><p>java.util.concurrent下的一个类，</p>
+<p>ReentrantLock类实现了 Lock，它拥有与 synchronized 相同的并发性和内存语义，但是添加了类似锁中断、超时，和多个条件变量等一些特性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Lock lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line">lock.lock();</span><br><span class="line"><span class="keyword">try</span> &#123; </span><br><span class="line">  <span class="comment">// 临界区</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">finally</span> &#123;</span><br><span class="line">  lock.unlock(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="8-1-可重入"><a href="#8-1-可重入" class="headerlink" title="8.1 可重入"></a>8.1 可重入</h5><p>可重入是指同一个线程如果首次获得了这把锁，那么因为它是这把锁的拥有者，因此有权利再次获得这把锁</p>
+<p>如果是不可重入锁，那么第二次获得锁时，自己也会被挡住</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> ReentrantLock lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      log.debug(<span class="string">&quot;main&quot;</span>);</span><br><span class="line">      method1();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      log.debug(<span class="string">&quot;method1&quot;</span>);</span><br><span class="line">      method2();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      log.debug(<span class="string">&quot;method2&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="8-2-可打断"><a href="#8-2-可打断" class="headerlink" title="8.2 可打断"></a>8.2 可打断</h5><p>调用线程的interrupt方法将正在等待锁的线程终止等待</p>
+<p>————-Test03—————–</p>
+<h5 id="8-3-锁超时"><a href="#8-3-锁超时" class="headerlink" title="8.3 锁超时"></a>8.3 锁超时</h5><p>可打断是一种<strong>被动</strong>避免死等的方式，需要别的线程来执行interrupt方法。</p>
+<p>锁超时是一种<strong>主动</strong>避免死等的方式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">()</span></span>;   <span class="comment">//尝试获取锁。true:获取到，可以进入临界区；false:未获取到。</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">(<span class="keyword">long</span> timeout, TimeUnit unit)</span> <span class="keyword">throws</span> InterruptedException <span class="comment">//尝试一定时间获取锁</span></span></span><br></pre></td></tr></table></figure>
+
+<p>————-Test04—————–</p>
+<h5 id="8-4-哲学家就餐问题的解决"><a href="#8-4-哲学家就餐问题的解决" class="headerlink" title="8.4 哲学家就餐问题的解决"></a>8.4 哲学家就餐问题的解决</h5><p>——————-DeadLockEatTest———————–</p>
+<h4 id="9-wait-amp-notify"><a href="#9-wait-amp-notify" class="headerlink" title="9.wait&amp;notify"></a>9.wait&amp;notify</h4><p><img src="./images/1604911151353.png" alt="1604911151353"></p>
+<ul>
+<li>线程获得到锁后，Owner线程发现自己往下执行的条件不满足，调用锁对象的wait方法，即可进入waitset变为waiting状态。</li>
+<li>BLOCKED和WAITING的线程都处于阻塞状态，不占用CPU时间片，BLOCKED是未获得锁，WAITING是获得了锁，但自己又放弃了锁。</li>
+<li>BLOCKED线程会在Owner线程释放锁时唤醒</li>
+<li>WAITING线程会在Owner线程调用notify或notifyAll时唤醒，但唤醒后并不意味着立刻获得锁，仍需进图EntryList重新竞争</li>
+</ul>
+<h5 id="9-1-API介绍"><a href="#9-1-API介绍" class="headerlink" title="9.1 API介绍"></a>9.1 API介绍</h5><ul>
+<li>obj.wait()让进入object锁的线程到waitSet等待。</li>
+<li>obj.notify()让object上正在waitSet上等待的线程挑一个来唤醒</li>
+<li>obj.notifyAll()让object上正在waitSet上等待的线程全部唤醒</li>
+</ul>
+<p>他们都是线程之间进行协作的手段，都属于Object对象的方法，由锁对象来调用。</p>
+<p><strong>必须获得此对象锁，成为owner后，才能调用这几个方法</strong></p>
+<p>——————-WaitTest01———————–</p>
+<p>——————-WaitTest02———————–</p>
+<h5 id="9-2-wait-sleep区别"><a href="#9-2-wait-sleep区别" class="headerlink" title="9.2 wait sleep区别"></a>9.2 wait sleep区别</h5><p><img src="./images/1604921222531.png" alt="1604921222531"></p>
+<h4 id="10-线程状态转换"><a href="#10-线程状态转换" class="headerlink" title="10.线程状态转换"></a>10.线程状态转换</h4><p><img src="./images/1604978135209.png" alt="1604978135209"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/" data-id="cki8eocx80006nohxevqcflgq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Docker常用命令" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/12/03/Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="article-date">
@@ -86,7 +349,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Docker命令介绍"><a href="#Docker命令介绍" class="headerlink" title="Docker命令介绍"></a>Docker命令介绍</h2><p>docker是传统的CS架构分为docker client和docker server</p>
+        <h2 id="命令介绍"><a href="#命令介绍" class="headerlink" title="命令介绍"></a>命令介绍</h2><p>docker是传统的CS架构分为docker client和docker server</p>
 <p>docker 客户端非常简单 ,我们可以直接输入 docker 命令来查看到 Docker 客户端的所有命令选项。</p>
 <p><strong>docker的镜像管理</strong></p>
 <p>#查看镜像列表: </p>
@@ -1202,8 +1465,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>title: Docker 教程<br>date: 2020-12-03 13:59:50</p>
-<h1 id="Docker简介"><a href="#Docker简介" class="headerlink" title="Docker简介"></a>Docker简介</h1><p>Docker 是一个开源的应用容器引擎，基于 [Go 语言] 并遵从 Apache2.0 协议开源。</p>
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">title: Docker 教程讲解</span><br><span class="line">date: 2020-12-03 13:59:50</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="Docker简介"><a href="#Docker简介" class="headerlink" title="Docker简介"></a>Docker简介</h2><p>Docker 是一个开源的应用容器引擎，基于 [Go 语言] 并遵从 Apache2.0 协议开源。</p>
 <p>Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。</p>
 <p>容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app）,更重要的是容器性能开销极低</p>
 <p>Docker 从 17.03 版本之后分为 CE（Community Edition: 社区版） 和 EE（Enterprise Edition: 企业版），我们用社区版就可以了。</p>
@@ -1333,7 +1597,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Docker-搭建私有仓库"><a href="#Docker-搭建私有仓库" class="headerlink" title="Docker 搭建私有仓库"></a>Docker 搭建私有仓库</h1><p>以Harbor为列搭建私有仓库</p>
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">title: Docker 搭建私有仓库</span><br><span class="line">date: 2020-12-03 13:59:50</span><br></pre></td></tr></table></figure>
+
+<h2 id="Harbor私有仓库"><a href="#Harbor私有仓库" class="headerlink" title="Harbor私有仓库"></a>Harbor私有仓库</h2><p>以Harbor为列搭建私有仓库</p>
 <h2 id="一、Harbor概述"><a href="#一、Harbor概述" class="headerlink" title="一、Harbor概述"></a>一、Harbor概述</h2><p>Habor是由VMWare公司开源的容器镜像仓库。事实上，Habor是在Docker Registry上进行了相应的</p>
 <p>企业级扩展，从而获得了更加广泛的应用，这些新的企业级特性包括：管理用户界面，基于角色的访</p>
 <p>问控制 ，AD/LDAP集成以及审计日志等，足以满足基本企业需求。</p>
@@ -1447,9 +1713,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>— title: test date: 2018-09-01 14:38:14 tags: test,测试 description: 测试 </p>
-<p>— <meta name="referrer" content="no-referrer" /></p>
-<h1 id="Docker-Dockerfile"><a href="#Docker-Dockerfile" class="headerlink" title="Docker Dockerfile"></a>Docker Dockerfile</h1><h3 id="什么是-Dockerfile？"><a href="#什么是-Dockerfile？" class="headerlink" title="什么是 Dockerfile？"></a>什么是 Dockerfile？</h3><p>Dockerfile 是一个用来构建镜像的文本文件，文本内容包含了一条条构建镜像所需的指令和说明。</p>
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">title: Docker Dockerfile</span><br><span class="line">date: 2020-12-03 13:59:50</span><br></pre></td></tr></table></figure>
+
+<h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><h3 id="什么是-Dockerfile？"><a href="#什么是-Dockerfile？" class="headerlink" title="什么是 Dockerfile？"></a>什么是 Dockerfile？</h3><p>Dockerfile 是一个用来构建镜像的文本文件，文本内容包含了一条条构建镜像所需的指令和说明。</p>
 <h2 id="一-Dockerfile基本结构"><a href="#一-Dockerfile基本结构" class="headerlink" title="一.Dockerfile基本结构"></a>一.Dockerfile基本结构</h2><p>一般的，Dockerfile 分为四部分：基础镜像信息、维护者信息、镜像操作指令和容器启动时执行指令</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># This Nuxt.js Dockerfile</span></span><br><span class="line"><span class="comment"># FROM </span></span><br><span class="line">MAINTAINER Xuest</span><br><span class="line"><span class="comment"># Base images 基础镜像</span></span><br><span class="line">FROM registry.ihdou.com/node:10.15.3-alpine</span><br><span class="line"><span class="comment">#MAINTAINER 维护者信息</span></span><br><span class="line">MAINTAINER Xuest </span><br><span class="line"><span class="comment">#ENV 设置环境变量</span></span><br><span class="line">ENV NODE_ENV=production</span><br><span class="line">ENV HOST 0.0.0.0</span><br><span class="line"><span class="comment">#RUN 执行以下命令 </span></span><br><span class="line">RUN mkdir -p /social-statics-app</span><br><span class="line"><span class="comment">#COPY </span></span><br><span class="line">COPY . /social-statics-app</span><br><span class="line"><span class="comment">#WORKDIR 相当于cd</span></span><br><span class="line">WORKDIR /social-statics-app</span><br><span class="line"><span class="comment">#EXPOSE 映射端口</span></span><br><span class="line">EXPOSE 3000</span><br><span class="line">RUN npm install</span><br><span class="line">RUN npm rebuild node-sass</span><br><span class="line">RUN npm run build</span><br><span class="line">RUN npm cache clean --force</span><br><span class="line"><span class="comment">#CMD 运行以下命令</span></span><br><span class="line">CMD [<span class="string">&quot;npm&quot;</span>, <span class="string">&quot;start&quot;</span>]</span><br></pre></td></tr></table></figure>
 
@@ -1535,259 +1801,6 @@
 
 
   
-    <article id="post-Java多线程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="article-date">
-  <time datetime="2020-11-13T08:57:42.205Z" itemprop="datePublished">2020-11-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="1-查看线程信息："><a href="#1-查看线程信息：" class="headerlink" title="1.查看线程信息："></a>1.查看线程信息：</h4><ul>
-<li><p>方法1：</p>
-<p>   jps</p>
-<p>   <u><del>top -H -p 进程id</del></u></p>
-</li>
-<li><p>方法2：</p>
-<p> jstack 进程id</p>
-</li>
-<li><p>方法3  </p>
-<p>jconsonle  ， jvisualvm</p>
-</li>
-</ul>
-<p>  cd /usr/local/</p>
-<p>  java -Djava.rmi.server.hostname=192.168.102.19 -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=12345 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false  Thread01</p>
-<h4 id="2-线程状态"><a href="#2-线程状态" class="headerlink" title="2.线程状态"></a>2.线程状态</h4><ul>
-<li>操作系统层面：5种<img src="./images/1604372609431.png" alt="1604372609431"></li>
-</ul>
-<p>【初始状态】：创建了线程对象</p>
-<p>【可运行状态】：（就绪状态）线程对象创建后，该状态的线程位于可运行线程池中，等待调度，获取cpu 的使用权 。</p>
-<p>【运行状态】：可运行状态的线程获得了cpu 时间片 ，执行程序代码。</p>
-<p>​    ·当CPU时间片用完，会从【运行状态】转换至【可运行状态】，会导致线程的上下文切换。</p>
-<p>【阻塞状态】：阻塞状态是指线程因为某种原因放弃了cpu 使用权，让出了cpu时间片，暂时停止运行。直到线程进入可运行)状态，才有机会再次获得cpu时间片转到运行状态。</p>
-<ul>
-<li><p>(一). 等待阻塞：运行(running)的线程执行o.wait()方法，JVM会把该线程放入等待队列(waitting queue)中。</p>
-</li>
-<li><p>(二). 同步阻塞：运行(running)的线程在获取对象的同步锁时，若该同步锁被别的线程占用，则JVM会把该线程放入锁池(lock pool)中。</p>
-</li>
-<li><p>(三). 其他阻塞：运行(running)的线程执行Thread.sleep(long ms)或t.join()方法，或者发出了I/O请求时，JVM会把该线程置为阻塞状态。当sleep()状态超时、join()等待线程终止或者超时、或者I/O处理完毕时，线程重新转入可运行(runnable)状态。</p>
-<p> ·对阻塞状态的线程来说只要他们一直不被唤醒，调度器就一直不回考虑调度他们。</p>
-</li>
-</ul>
-<p>【中止状态】：线程执行完毕，生命周期结束，不会再转换为其他状态。</p>
-<ul>
-<li>根据Thread.State枚举，分为6种状态。</li>
-</ul>
-<p><img src="./images/1604375157493.png" alt="1604375157493"></p>
-<p>1.初始(NEW)：新创建了一个线程对象，但还没有调用start()方法。</p>
-<p>2.运行(RUNNABLE)：调用了start方法后，Java线程中将就绪（ready）和运行中（running）两种状态笼统的称为“运行”。</p>
-<p>线程对象创建后，其他线程(比如main线程）调用了该对象的start()方法。该状态涵盖了操作系统层面的【可运行状态】，【运行状态】和【阻塞状态】(由于BIO导致的线程阻塞，在java中无法区分，仍然认为是可运行。)</p>
-<p>3.阻塞(BLOCKED)：表示线程阻塞于锁。</p>
-<p>4.等待(WAITING)：进入该状态的线程需要等待其他线程做出一些特定动作（通知或中断）。</p>
-<p>5.超时等待(TIMED_WAITING)：该状态不同于WAITING，它可以在指定的时间后自行返回。</p>
-<p>6.终止(TERMINATED)：表示该线程已经执行完毕。</p>
-<p>————-StateTest—————</p>
-<h4 id="3-守护线程"><a href="#3-守护线程" class="headerlink" title="3.守护线程"></a>3.守护线程</h4><p>默认情况下，Java进程需要等待所有线程都运行结束，才会结束。有一种特殊的线程叫做守护线程，只要其他非守护线程运行结束了，即使守护线程的代码没有执行完，也会强制结束。</p>
-<p>也就是说，如果没有普通线程，那么守护线程也没有存活下去的意义了。</p>
-<p>垃圾回收器线程就是 一种守护线程。</p>
-<p>————-DaemonTest—————</p>
-<h4 id="4-线程上下文切换（Thread-Context-Switch）"><a href="#4-线程上下文切换（Thread-Context-Switch）" class="headerlink" title="4.线程上下文切换（Thread Context Switch）"></a>4.线程上下文切换（Thread Context Switch）</h4><p>因为以下一些原因，导致cpu不再执行当前线程，转而执行另一个线程的代码：</p>
-<ul>
-<li>线程cpu时间片用完（被动）</li>
-<li>垃圾回收（被动）</li>
-<li>有更高优先级线程执行（被动）</li>
-<li>线程自己调用了sleep，wait，yield，join，park，synchronized，lock等方法（主动）</li>
-</ul>
-<p>当context switch发生时，需要操作系统保存当前线程的状态，并恢复另一个线程的状态。</p>
-<p>context switch频繁发生会影响性能。</p>
-<h4 id="5-常见方法"><a href="#5-常见方法" class="headerlink" title="5.常见方法"></a>5.常见方法</h4><p><img src="./images/1604393649085.png" alt="1604393649085"></p>
-<p><img src="./images/1604393753556.png" alt="1604393753556"></p>
-<ul>
-<li><h5 id="sleep-amp-yield"><a href="#sleep-amp-yield" class="headerlink" title="sleep&amp;yield"></a>sleep&amp;yield</h5></li>
-</ul>
-<p><img src="./images/1604395158808.png" alt="1604395158808"></p>
-<p>​    3.yield()方法的作用是放弃当前的CPU资源，让其 他任务去占用CPU执行时间，放弃的时间不确定， 有可能刚刚放弃，马上又获得CPU时间片。</p>
-<ul>
-<li><h5 id="join"><a href="#join" class="headerlink" title="join"></a>join</h5></li>
-</ul>
-<p>如果一个线程A执行了thread.join()语句，其含义是：当前线程A等待thread线程终止之后才 从thread.join()返回。线程Thread除了提供join()方法之外，还提供了join(long millis)和join(long millis,int nanos)两个具备超时特性的方法。这两个超时方法表示，如果线程thread在给定的超时时间里没有终止，那么将会从该超时方法中返回。</p>
-<p>体现了多线程中同步的应用，即调用方需要等待线程的结果。</p>
-<ul>
-<li><h5 id="interrupt"><a href="#interrupt" class="headerlink" title="interrupt"></a>interrupt</h5></li>
-</ul>
-<ol>
-<li><p>打断sleep，wait，join的线程</p>
-</li>
-<li><p>通过调用一个线程的 interrupt() 来中断该线程，如果该线程处于阻塞、限期等待或者无限期等待状态，那么就会抛出 InterruptedException，从而提前结束该线程。（打断标记:false）</p>
-<p>———-InterruptTest01——————–</p>
-</li>
-<li><p>如果一个线程的 run() 方法执行一个无限循环，并且没有执行 sleep() 等会抛出 InterruptedException 的操作，调用 interrupt() 方法会设置线程的中断标记，此时调用 interrupted() 方法会返回 true。因此可以在循环体中使用 interrupted() 方法来判断线程是否处于中断状态，从而提前结束线程。（打断标记:true）</p>
-<p>————InterruptTest02———————–</p>
-</li>
-</ol>
-<h4 id="6-两阶段终止模式—interrupt实现"><a href="#6-两阶段终止模式—interrupt实现" class="headerlink" title="6.两阶段终止模式—interrupt实现"></a>6.两阶段终止模式—interrupt实现</h4><ul>
-<li>当我们想要结束一个线程时候，通过此模式可以优雅安全的关闭线程，让线程可以完成它本应完成的当前任务并可以附加一些收尾工作后再进行关闭</li>
-<li>是一种线程设计模式，并不在传统23中设计模式中</li>
-<li>此模式下关闭线程会有一定延迟，主要在于被关闭线程需要执行完后，再进行关闭</li>
-</ul>
-<ul>
-<li>​     错误方式</li>
-</ul>
-<p><img src="./images/1604404899459.png" alt="1604404899459"></p>
-<ul>
-<li>模拟场景—监控处理</li>
-</ul>
-<p><img src="./images/1604458290894.png"></p>
-<p>———————–TwoPhaseTerminationTest————————</p>
-<h4 id="7-锁"><a href="#7-锁" class="headerlink" title="7.锁"></a>7.锁</h4><h5 id="7-1-临界区："><a href="#7-1-临界区：" class="headerlink" title="7.1 临界区："></a>7.1 临界区：</h5><p>一段代码内如果存在对共享资源的的多线程读写操作，称这段代码为临界区。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> counter = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">increament</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">    <span class="comment">// 临界区</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    count++;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">decreament</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">      <span class="comment">// 临界区</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    count--;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="7-2竞态条件"><a href="#7-2竞态条件" class="headerlink" title="7.2竞态条件"></a>7.2竞态条件</h5><p>多个线程在临界区内执行，由于代码的<strong>执行序列不同</strong>而导致结果无法预测，称之为发生了<strong>竞态条件</strong></p>
-<p>例：</p>
-<p>——————SynTest01——-查看字节码————</p>
-<ul>
-<li>当前线程获得锁后，执行临界区代码；执行中其他线程进入临界区时则进入阻塞；指到当前线程释放锁</li>
-</ul>
-<h5 id="7-3方法上synchronized"><a href="#7-3方法上synchronized" class="headerlink" title="7.3方法上synchronized"></a>7.3方法上synchronized</h5><p>synchronized是指在对象上加锁。</p>
-<p>synchronized(lock): 是指对lock对象加锁</p>
-<p>synchronized(this): 是指对当前对象加锁</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">等价于</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span>(<span class="keyword">this</span>)&#123;</span><br><span class="line">        </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">等价于</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span>(Test.class)&#123;</span><br><span class="line">        </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h5 id="7-4-Java对象头"><a href="#7-4-Java对象头" class="headerlink" title="7.4 Java对象头"></a>7.4 Java对象头</h5><ul>
-<li>Java对象由 Java对象头和成员变量组成</li>
-</ul>
-<p>对象头以32位虚拟机为例：</p>
-<p>普通对象</p>
-<p>​      <img src="./images/1604481085895.png" alt="1604481085895"></p>
-<p>数组对象    <img src="./images/1604481118286.png" alt="1604481118286"></p>
-<p>其中Mark Word结构为</p>
-<p><img src="./images/1604481424575.png" alt="1604481424575"></p>
-<h5 id="7-5-Monitor"><a href="#7-5-Monitor" class="headerlink" title="7.5 Monitor"></a>7.5 Monitor</h5><p>Monitor被翻译为<strong>监视器</strong>或<strong>管程</strong>，是java synchronized锁的底层原理</p>
-<p>每个Java对象都可以关联一个Monitor对象，当使用synchronized给对象上锁（重量级）之后，该对象头的Mark Word就被设置指向Monitor的指针。</p>
-<p>Monitor结构如下</p>
-<p><img src="./images/1604483026018.png" alt="1604483026018"></p>
-<p><img src="./images/1604488793391.png" alt="1604488793391"></p>
-<p><a target="_blank" rel="noopener" href="https://www.processon.com/diagraming/5fa279bc0791291e95ccb764">https://www.processon.com/diagraming/5fa279bc0791291e95ccb764</a></p>
-<h5 id="7-6-synchronized字节码"><a href="#7-6-synchronized字节码" class="headerlink" title="7.6 synchronized字节码"></a>7.6 synchronized字节码</h5><p>———————————-SynTest01————————————–</p>
-<h5 id="7-7-轻量级锁"><a href="#7-7-轻量级锁" class="headerlink" title="7.7 轻量级锁"></a>7.7 轻量级锁</h5><p>轻量级锁的使用场景：如果一个对象虽然有多线程要加锁，但加锁的时间是错开的（也就是没有竞争），那么可以使用轻量级锁来优化。</p>
-<p>轻量级锁对使用者是透明的，预发仍然是synchronized。</p>
-<p>假设有两个方法同步块，利用同一个对象加锁。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> Object obj = <span class="keyword">new</span> Object();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">synchronized</span> (obj) &#123;</span><br><span class="line">    <span class="comment">// 同步代码块1</span></span><br><span class="line">    method2();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">synchronized</span> (obj) &#123;</span><br><span class="line">    <span class="comment">// 同步代码块2</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="./images/1604557850274.png" alt="1604557850274"></p>
-<p><img src="./images/1604558071476.png" alt="1604558071476"></p>
-<p><img src="./images/1604558466280.png" alt="1604558466280"></p>
-<p><img src="./images/1604558746983.png" alt="1604558746983"></p>
-<p><img src="./images/1604558916004.png" alt="1604558916004"></p>
-<p><img src="./images/1604559023468.png" alt="1604559023468"></p>
-<h5 id="7-8-锁膨胀"><a href="#7-8-锁膨胀" class="headerlink" title="7.8 锁膨胀"></a>7.8 锁膨胀</h5><p>如果在尝试加轻量级锁的过程中，CAS操作无法成功，这时一种情况就是有其它线程为此对象加上了轻量级锁（有竞争），这是需要进行锁膨胀，将轻量级锁升级成重量级锁。</p>
-<p><img src="./images/1604560081669.png" alt="1604560081669"></p>
-<p><img src="./images/1604560207271.png" alt="1604560207271"></p>
-<p><img src="./images/1604560393452.png" alt="1604560393452"></p>
-<h5 id="7-9-自旋优化"><a href="#7-9-自旋优化" class="headerlink" title="7.9 自旋优化"></a>7.9 自旋优化</h5><p><img src="./images/1604560802387.png" alt="1604560802387"></p>
-<p><img src="./images/1604560904235.png" alt="1604560904235"></p>
-<p><img src="./images/1604560935146.png" alt="1604560935146"></p>
-<h5 id="7-10-偏向锁"><a href="#7-10-偏向锁" class="headerlink" title="7.10 偏向锁"></a>7.10 偏向锁</h5><p>轻量级锁在没有竞争时(就自己这个线程)，每次锁冲入仍然要执行CAS操作。</p>
-<p>JAVA6中引入偏向锁来做进一步优化：只有第一次使用CAS将线程ID设置到对象的Mark Word头，之后发现这个线程ID时自己的就表示没有竞争，不用重新CAS，以后只要不发生竞争，这个对象锁就归该线程所有。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> Object obj = <span class="keyword">new</span> Object();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">synchronized</span> (obj) &#123;</span><br><span class="line">    <span class="comment">// 同步代码块1</span></span><br><span class="line">    method2();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">synchronized</span> (obj) &#123;<span class="comment">//------------锁重入</span></span><br><span class="line">    <span class="comment">// 同步代码块2</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h6 id="7-10-1-偏向状态"><a href="#7-10-1-偏向状态" class="headerlink" title="7.10.1 偏向状态"></a>7.10.1 偏向状态</h6><p><img src="./images/1604565305465.png" alt="1604565305465"></p>
-<p>一个对象创建时：</p>
-<ul>
-<li>如果开启了偏向锁(默认开启)，那么对象创建后，markword值为0x05，即最后3位为<strong>101</strong>，这时它的thread，epoch，age都为0</li>
-<li>偏向锁默认是有延迟的，不会再程序启动时立即生效，如果想避免延迟，可以加VM参数：-XX:BiasedLockingStartupDelay=0来禁用延迟。</li>
-<li>如果没有开启偏向锁，那么对象创建后，markword的值为0x01，即最后3位为<strong>001</strong>，这时它的hashcode，age都为0，第一次用到hashcode时才会赋值</li>
-</ul>
-<p>——————–BiasedTest01——-验证对象创建mark头数据，vm参数等———–</p>
-<p>——————–BiasedTest02——–验证加锁前后mark头数据———-</p>
-<h6 id="7-10-2-撤销-调用hashcode"><a href="#7-10-2-撤销-调用hashcode" class="headerlink" title="7.10.2 撤销-调用hashcode"></a>7.10.2 撤销-调用hashcode</h6><p>测试hashcode ：thread+hashcode&gt;64位</p>
-<p>——————–BiasedTest02——–验证hashcode加锁前后mark头数据———-</p>
-<h6 id="7-10-3-撤销-其他线程使用对象"><a href="#7-10-3-撤销-其他线程使用对象" class="headerlink" title="7.10.3 撤销-其他线程使用对象"></a>7.10.3 撤销-其他线程使用对象</h6><p>当有其它线程使用偏向锁对象时，会将偏向锁升级为轻量级锁</p>
-<p>——————–BiasedTest03——–</p>
-<h6 id="7-10-4-撤销-调用wait-notify"><a href="#7-10-4-撤销-调用wait-notify" class="headerlink" title="7.10.4 撤销-调用wait/notify"></a>7.10.4 撤销-调用wait/notify</h6><h6 id="7-10-5-批量重偏向"><a href="#7-10-5-批量重偏向" class="headerlink" title="7.10.5 批量重偏向"></a>7.10.5 批量重偏向</h6><p>如果对象虽然被多个线程访问，但没有竞争，这时偏向了T1的线程仍有机会重新偏向T2，重偏向会重置对象的Thread ID</p>
-<p>当撤销偏向锁阈值达到20次后，jvm会觉得，自己是不是偏向错了，于是会再给这些对象加锁时，重新偏向至加锁线程。</p>
-<p>——————–BiasedTest04——–</p>
-<h6 id="7-10-6-批量撤销"><a href="#7-10-6-批量撤销" class="headerlink" title="7.10.6 批量撤销"></a>7.10.6 批量撤销</h6><p>当撤销偏向锁阈值达到40次后，jvm会觉得，自己确实偏向错了，根本就不该偏向。于是整个类的所有对象都会变为不可偏向的。新建的对象也是不可偏向的。</p>
-<p>——————–BiasedTest05——–</p>
-<h5 id="7-11-锁消除"><a href="#7-11-锁消除" class="headerlink" title="7.11 锁消除"></a>7.11 锁消除</h5><p>锁消除是发生在编译器级别的一种锁优化方式。<br>有时候我们写的代码完全不需要加锁，却执行了加锁操作。</p>
-<p>JIT即时编译器，会对热点代码进行优化。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> x = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method01</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Object o = <span class="keyword">new</span> Object();</span><br><span class="line">        <span class="keyword">synchronized</span>(o) &#123;<span class="comment">// 对方法内对象变量加锁，不会发生任何竞争，JIT即时编译器去将锁去掉</span></span><br><span class="line">            x++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>锁消除默认时打开的，可以通过 -XX:-EliminateLocks 去掉</p>
-<h5 id="7-11-死锁"><a href="#7-11-死锁" class="headerlink" title="7.11 死锁"></a>7.11 死锁</h5><h6 id="7-11-1-定义"><a href="#7-11-1-定义" class="headerlink" title="7.11.1 定义"></a>7.11.1 定义</h6><p>存在这样的情况，一个线程同时获取多把锁，这时就容易产生死锁。</p>
-<p>   线程1获得A对象锁，接下来想获取B对象锁</p>
-<p>   线程2获得B对象锁，接下来想获取A对象锁</p>
-<p>———————–DeadLockTest———————————-</p>
-<h6 id="7-11-2-死锁定位"><a href="#7-11-2-死锁定位" class="headerlink" title="7.11.2 死锁定位"></a>7.11.2 死锁定位</h6><ul>
-<li><p>命令行工具</p>
-<p>   jps</p>
-<p>  jstack 进程id</p>
-</li>
-<li><p>jconsonle  ， jvisualvm</p>
-</li>
-</ul>
-<h6 id="7-11-3-死锁现象-哲学家就餐"><a href="#7-11-3-死锁现象-哲学家就餐" class="headerlink" title="7.11.3 死锁现象-哲学家就餐"></a>7.11.3 死锁现象-哲学家就餐</h6><p><img src="./images/1604891663452.png" alt="1604891663452"></p>
-<p>——————-DeadLockEatTest———————–</p>
-<h4 id="8-ReentrantLock"><a href="#8-ReentrantLock" class="headerlink" title="8.ReentrantLock"></a>8.ReentrantLock</h4><p>java.util.concurrent下的一个类，</p>
-<p>ReentrantLock类实现了 Lock，它拥有与 synchronized 相同的并发性和内存语义，但是添加了类似锁中断、超时，和多个条件变量等一些特性</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Lock lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line">lock.lock();</span><br><span class="line"><span class="keyword">try</span> &#123; </span><br><span class="line">  <span class="comment">// 临界区</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">finally</span> &#123;</span><br><span class="line">  lock.unlock(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="8-1-可重入"><a href="#8-1-可重入" class="headerlink" title="8.1 可重入"></a>8.1 可重入</h5><p>可重入是指同一个线程如果首次获得了这把锁，那么因为它是这把锁的拥有者，因此有权利再次获得这把锁</p>
-<p>如果是不可重入锁，那么第二次获得锁时，自己也会被挡住</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> ReentrantLock lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      log.debug(<span class="string">&quot;main&quot;</span>);</span><br><span class="line">      method1();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      log.debug(<span class="string">&quot;method1&quot;</span>);</span><br><span class="line">      method2();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      log.debug(<span class="string">&quot;method2&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h5 id="8-2-可打断"><a href="#8-2-可打断" class="headerlink" title="8.2 可打断"></a>8.2 可打断</h5><p>调用线程的interrupt方法将正在等待锁的线程终止等待</p>
-<p>————-Test03—————–</p>
-<h5 id="8-3-锁超时"><a href="#8-3-锁超时" class="headerlink" title="8.3 锁超时"></a>8.3 锁超时</h5><p>可打断是一种<strong>被动</strong>避免死等的方式，需要别的线程来执行interrupt方法。</p>
-<p>锁超时是一种<strong>主动</strong>避免死等的方式</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">()</span></span>;   <span class="comment">//尝试获取锁。true:获取到，可以进入临界区；false:未获取到。</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">(<span class="keyword">long</span> timeout, TimeUnit unit)</span> <span class="keyword">throws</span> InterruptedException <span class="comment">//尝试一定时间获取锁</span></span></span><br></pre></td></tr></table></figure>
-
-<p>————-Test04—————–</p>
-<h5 id="8-4-哲学家就餐问题的解决"><a href="#8-4-哲学家就餐问题的解决" class="headerlink" title="8.4 哲学家就餐问题的解决"></a>8.4 哲学家就餐问题的解决</h5><p>——————-DeadLockEatTest———————–</p>
-<h4 id="9-wait-amp-notify"><a href="#9-wait-amp-notify" class="headerlink" title="9.wait&amp;notify"></a>9.wait&amp;notify</h4><p><img src="./images/1604911151353.png" alt="1604911151353"></p>
-<ul>
-<li>线程获得到锁后，Owner线程发现自己往下执行的条件不满足，调用锁对象的wait方法，即可进入waitset变为waiting状态。</li>
-<li>BLOCKED和WAITING的线程都处于阻塞状态，不占用CPU时间片，BLOCKED是未获得锁，WAITING是获得了锁，但自己又放弃了锁。</li>
-<li>BLOCKED线程会在Owner线程释放锁时唤醒</li>
-<li>WAITING线程会在Owner线程调用notify或notifyAll时唤醒，但唤醒后并不意味着立刻获得锁，仍需进图EntryList重新竞争</li>
-</ul>
-<h5 id="9-1-API介绍"><a href="#9-1-API介绍" class="headerlink" title="9.1 API介绍"></a>9.1 API介绍</h5><ul>
-<li>obj.wait()让进入object锁的线程到waitSet等待。</li>
-<li>obj.notify()让object上正在waitSet上等待的线程挑一个来唤醒</li>
-<li>obj.notifyAll()让object上正在waitSet上等待的线程全部唤醒</li>
-</ul>
-<p>他们都是线程之间进行协作的手段，都属于Object对象的方法，由锁对象来调用。</p>
-<p><strong>必须获得此对象锁，成为owner后，才能调用这几个方法</strong></p>
-<p>——————-WaitTest01———————–</p>
-<p>——————-WaitTest02———————–</p>
-<h5 id="9-2-wait-sleep区别"><a href="#9-2-wait-sleep区别" class="headerlink" title="9.2 wait sleep区别"></a>9.2 wait sleep区别</h5><p><img src="./images/1604921222531.png" alt="1604921222531"></p>
-<h4 id="10-线程状态转换"><a href="#10-线程状态转换" class="headerlink" title="10.线程状态转换"></a>10.线程状态转换</h4><p><img src="./images/1604978135209.png" alt="1604978135209"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/" data-id="cki8eocx80006nohxevqcflgq" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
     <article id="post-Redis集群安装部署" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/10/30/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" class="article-date">
@@ -1800,7 +1813,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Redis集群安装部署"><a href="#Redis集群安装部署" class="headerlink" title="Redis集群安装部署"></a>Redis集群安装部署</h1><h2 id="1-Redis下载"><a href="#1-Redis下载" class="headerlink" title="1  Redis下载"></a>1  Redis下载</h2><p>从该网站<a target="_blank" rel="noopener" href="http://www.redis.net.cn/%E4%B8%8B%E8%BD%BDredis%E7%A8%B3%E5%AE%9A%E7%89%88%E6%9C%AC[Redis">http://www.redis.net.cn/下载redis稳定版本[Redis</a> 5.0.4](<a target="_blank" rel="noopener" href="http://download.redis.io/releases/redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)%E3%80%82">http://download.redis.io/releases/redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)。</a></p>
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">title: Redis集群安装部署</span><br><span class="line">date: 2020-12-03 13:59:50</span><br></pre></td></tr></table></figure>
+
+<h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><h2 id="1-Redis下载"><a href="#1-Redis下载" class="headerlink" title="1  Redis下载"></a>1  Redis下载</h2><p>从该网站<a target="_blank" rel="noopener" href="http://www.redis.net.cn/%E4%B8%8B%E8%BD%BDredis%E7%A8%B3%E5%AE%9A%E7%89%88%E6%9C%AC[Redis">http://www.redis.net.cn/下载redis稳定版本[Redis</a> 5.0.4](<a target="_blank" rel="noopener" href="http://download.redis.io/releases/redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)%E3%80%82">http://download.redis.io/releases/redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)。</a></p>
 <p>模式: 三主三从</p>
 <p>5.0版本后不需要ruby支持，其底层改由C实现</p>
 <p>主从配置、leader选举由redis自己实现</p>
@@ -1874,7 +1889,11 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Elasticsearch集群搭建"><a href="#Elasticsearch集群搭建" class="headerlink" title="Elasticsearch集群搭建"></a>Elasticsearch集群搭建</h1><p><strong>1.1</strong> <strong>安装准备</strong></p>
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">title: Elasticsearch集群搭建</span><br><span class="line">date: 2020-12-03 13:59:50</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Elasticsearch集群搭建"><a href="#Elasticsearch集群搭建" class="headerlink" title="Elasticsearch集群搭建"></a>Elasticsearch集群搭建</h2><p><strong>1.1</strong> <strong>安装准备</strong></p>
 <p><strong>1.1.1**</strong>下载安装包**</p>
 <p><a target="_blank" rel="noopener" href="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.2.tar.gz">https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.2.tar.gz</a></p>
 <p><strong>1.1.2</strong> <strong>服务器准备</strong></p>
@@ -2061,7 +2080,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Maven知识库"><a href="#Maven知识库" class="headerlink" title="Maven知识库"></a>Maven知识库</h1><h3 id="Maven的作用？"><a href="#Maven的作用？" class="headerlink" title="Maven的作用？"></a>Maven的作用？</h3><p>1.添加第三方jar包</p>
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">title:Maven知识库</span><br><span class="line">date: 2020-12-03 13:59:50</span><br></pre></td></tr></table></figure>
+
+<h2 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a>Maven</h2><h3 id="Maven的作用？"><a href="#Maven的作用？" class="headerlink" title="Maven的作用？"></a>Maven的作用？</h3><p>1.添加第三方jar包</p>
 <p>2.解决jar包之间的依赖关系</p>
 <p>3.获取第三方jar包</p>
 <p>4.将项目拆成多个工程模块</p>
@@ -2225,51 +2246,6 @@
 
 
   
-    <article id="post-hexo" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/07/24/hexo/" class="article-date">
-  <time datetime="2020-07-24T06:59:50.000Z" itemprop="datePublished">2020-07-24</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/07/24/hexo/">常用命令</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h4><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">hexo</span> <span class="string">clean</span></span><br><span class="line"><span class="attr">hexo</span> <span class="string">g</span></span><br><span class="line"><span class="attr">hexo</span> <span class="string">d</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">present出席 absent缺席 predict 预言;预告 linear 直线的</span><br></pre></td></tr></table></figure>
-
-<h4 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h4><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">kubectl</span> <span class="string">create deployment java-demo --image=harry82/tomcat:v1 --dry-run=client -o yaml &gt; java-demo.yaml</span></span><br><span class="line"><span class="attr">kubectl</span> <span class="string">expose deployment java-demo --port=80 --target-port=8080 --type=NodePort --dry-run=client -o yaml &gt;svc.yaml</span></span><br><span class="line"><span class="attr">kubectl</span> <span class="string">get pod -o wide</span></span><br><span class="line"><span class="attr">kubectl</span> <span class="string">desribe pod nginx-f89759699-gjgbn</span></span><br><span class="line"><span class="attr">kubectl</span> <span class="string">get ep #查看svc关联pod</span></span><br><span class="line"></span><br><span class="line"><span class="attr">kubectl</span> <span class="string">create deployment nginx --image=nginx</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p>另一种实现这个功能的方法是按ctrl+r 来调用命令历史记录的递归搜索，输入后，提示变为：(reverse-i-search)`’:现在可以输入一个命令，并且会显示匹配的命令，按回车键执行。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2020/07/24/hexo/" data-id="cki8fm2gq0000zkhxd4fqc5ob" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
 
 
 </section>
@@ -2288,7 +2264,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li></ul>
     </div>
   </div>
 
@@ -2299,6 +2275,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程讲解</a>
+          </li>
         
           <li>
             <a href="/2020/12/03/Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">Docker 命令大全</a>
@@ -2314,10 +2294,6 @@
         
           <li>
             <a href="/2020/11/27/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">(no title)</a>
           </li>
         
       </ul>

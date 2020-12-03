@@ -5,49 +5,49 @@
   
 
   
-  <title>Hexo</title>
+  <title>多线程讲解 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="1.查看线程信息： 方法1：    jps    top -H -p 进程id  方法2：  jstack 进程id  方法3   jconsonle  ， jvisualvm     cd &#x2F;usr&#x2F;local&#x2F;   java -Djava.rmi.server.hostname&#x3D;192.168.102.19 -Dcom.sun.management.jmxremote -Dcom.sun.ma">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/index.html">
+<meta property="og:title" content="多线程讲解">
+<meta property="og:url" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="1.查看线程信息： 方法1：    jps    top -H -p 进程id  方法2：  jstack 进程id  方法3   jconsonle  ， jvisualvm     cd &#x2F;usr&#x2F;local&#x2F;   java -Djava.rmi.server.hostname&#x3D;192.168.102.19 -Dcom.sun.management.jmxremote -Dcom.sun.ma">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604372609431.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604375157493.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604393649085.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604393753556.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604395158808.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604404899459.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604458290894.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604481085895.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604481118286.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604481424575.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604483026018.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604488793391.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604557850274.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604558071476.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604558466280.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604558746983.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604558916004.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604559023468.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560081669.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560207271.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560393452.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560802387.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560904235.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560935146.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604565305465.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604891663452.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604911151353.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604921222531.png">
-<meta property="og:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604978135209.png">
-<meta property="article:published_time" content="2020-11-13T08:57:42.205Z">
-<meta property="article:modified_time" content="2020-11-23T07:07:30.853Z">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604372609431.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604375157493.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604393649085.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604393753556.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604395158808.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604404899459.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604458290894.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604481085895.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604481118286.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604481424575.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604483026018.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604488793391.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604557850274.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604558071476.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604558466280.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604558746983.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604558916004.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604559023468.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560081669.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560207271.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560393452.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560802387.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560904235.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560935146.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604565305465.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604891663452.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604911151353.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604921222531.png">
+<meta property="og:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604978135209.png">
+<meta property="article:published_time" content="2020-12-03T05:59:50.000Z">
+<meta property="article:modified_time" content="2020-12-03T06:25:29.438Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604372609431.png">
+<meta name="twitter:image" content="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604372609431.png">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -98,13 +98,23 @@
       <div class="outer">
         <section id="main"><article id="post-Java多线程" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="article-date">
-  <time datetime="2020-11-13T08:57:42.205Z" itemprop="datePublished">2020-11-13</time>
+    <a href="/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="article-date">
+  <time datetime="2020-12-03T05:59:50.000Z" itemprop="datePublished">2020-12-03</time>
 </a>
     
   </div>
   <div class="article-inner">
     
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      多线程讲解
+    </h1>
+  
+
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
@@ -339,7 +349,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/" data-id="cki8eocx80006nohxevqcflgq" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/" data-id="cki8eocx80006nohxevqcflgq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -348,19 +358,10 @@
     
 <nav id="article-nav">
   
-    <a href="/2020/11/27/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          (no title)
-        
-      </div>
-    </a>
   
-  
-    <a href="/2020/10/30/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2020/12/03/Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title"></div>
+      <div class="article-nav-title">Docker 命令大全</div>
     </a>
   
 </nav>
@@ -384,7 +385,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li></ul>
     </div>
   </div>
 
@@ -395,6 +396,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程讲解</a>
+          </li>
         
           <li>
             <a href="/2020/12/03/Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">Docker 命令大全</a>
@@ -410,10 +415,6 @@
         
           <li>
             <a href="/2020/11/27/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/13/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">(no title)</a>
           </li>
         
       </ul>
