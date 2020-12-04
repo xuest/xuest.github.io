@@ -1,230 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
-  </script>
-
-  <meta name="description" content="1.查看线程信息： 方法1：    jps    top -H -p 进程id  方法2：  jstack 进程id  方法3   jconsonle  ， jvisualvm     cd &#x2F;usr&#x2F;local&#x2F;   java -Djava.rmi.server.hostname&#x3D;192.168.102.19 -Dcom.sun.management.jmxremote -Dcom.sun.ma">
-<meta property="og:type" content="article">
-<meta property="og:title" content="多线程讲解">
-<meta property="og:url" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/index.html">
-<meta property="og:site_name" content="Augustxuesong">
-<meta property="og:description" content="1.查看线程信息： 方法1：    jps    top -H -p 进程id  方法2：  jstack 进程id  方法3   jconsonle  ， jvisualvm     cd &#x2F;usr&#x2F;local&#x2F;   java -Djava.rmi.server.hostname&#x3D;192.168.102.19 -Dcom.sun.management.jmxremote -Dcom.sun.ma">
-<meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604372609431.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604375157493.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604393649085.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604393753556.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604395158808.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604404899459.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604458290894.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604481085895.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604481118286.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604481424575.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604483026018.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604488793391.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604557850274.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604558071476.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604558466280.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604558746983.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604558916004.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604559023468.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560081669.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560207271.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560393452.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560802387.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560904235.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604560935146.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604565305465.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604891663452.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604911151353.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604921222531.png">
-<meta property="og:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604978135209.png">
-<meta property="article:published_time" content="2020-07-03T05:59:50.000Z">
-<meta property="article:modified_time" content="2020-12-04T02:53:40.473Z">
-<meta property="article:author" content="xuesongtan">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/images/1604372609431.png">
-
-<link rel="canonical" href="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'en'
-  };
-</script>
-
-  <title>多线程讲解 | Augustxuesong</title>
-  
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
 
 
 
 
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Augustxuesong</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">Augustxuesong</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-    </div>
-  </div>
-</div>
+    <meta name="keywords" content=""/>
 
 
 
+    <meta name="description" content="1.查看线程信息：
+方法1：
+   jps
+   top -H -p 进程id
 
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
+方法2：
+ jstack 进程id
 
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
-
-  </li>
-  </ul>
-</nav>
+方法3  
+jconsonle  ， jvisualvm
 
 
+  cd /usr/local/
+  java -Djava.rmi.server.hostname=192.1..."/>
 
 
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
+<meta name="Robots" content="all">
 
 
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
+    <title>Augustxuesong | 多线程讲解</title>
 
-          <div class="content post posts-expand">
+
+<link rel="icon" href="/images/favicon.ico">
+
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+
+<link rel="stylesheet" href="/css/atom-one-dark.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script src="/js/highlight.min.js"></script>
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body>
+    <div class="main-container">
+        <header class="header">
+    <div class="global-width">
+        <nav class="nav-box">
             
+                <a class="nav-item" href="/"
+                
+                >Home</a>
+            
+                <a class="nav-item" href="/resume"
+                
+                >Resume</a>
+            
+                <a class="nav-item" href="/mood"
+                
+                   target="_blank"
+                
+                >Mood</a>
+            
+                <a class="nav-item" href="/amusement/tetris"
+                
+                   target="_blank"
+                
+                >Amusement</a>
+            
+                <a class="nav-item" href="/about"
+                
+                >About</a>
+            
+        </nav>
+    </div>
+</header>
 
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
+        <section class="content global-width">
+            <div class="main">
+                <article class="box post">
+    <div class="post-title align-center detail-title">多线程讲解</div>
+    <div class="post-meta align-center">
+        
+        <i class="fa fa-calendar"></i> <time>2020-07-03</time>
+        <span class="dotted">|</span>
+        <i class="fa fa-user"></i> 
+        
+    </div>
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="xuesongtan">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Augustxuesong">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          多线程讲解
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-07-03 13:59:50" itemprop="dateCreated datePublished" datetime="2020-07-03T13:59:50+08:00">2020-07-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-12-04 10:53:40" itemprop="dateModified" datetime="2020-12-04T10:53:40+08:00">2020-12-04</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
+    <div class="post-content">
         <h4 id="1-查看线程信息："><a href="#1-查看线程信息：" class="headerlink" title="1.查看线程信息："></a>1.查看线程信息：</h4><ul>
 <li><p>方法1：</p>
 <p>   jps</p>
@@ -454,185 +324,91 @@
 <h4 id="10-线程状态转换"><a href="#10-线程状态转换" class="headerlink" title="10.线程状态转换"></a>10.线程状态转换</h4><p><img src="./images/1604978135209.png" alt="1604978135209"></p>
 
     </div>
-
+</article>
+            </div>
+            <div class="aside">
     
-    
-    
-
-      <footer class="post-footer">
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2020/06/03/Maven%E7%9F%A5%E8%AF%86%E5%BA%93/" rel="prev" title="Maven知识库">
-      <i class="fa fa-chevron-left"></i> Maven知识库
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/08/03/Elasticsearch%E9%9B%86%E7%BE%A4/" rel="next" title="Elasticsearch集群搭建">
-      Elasticsearch集群搭建 <i class="fa fa-chevron-right"></i>
-    </a></div>
+        <div class="box widget">
+    <div class="introduction">
+        <p><img src="/images/avatar.jpg" alt="head-sculpture" /></p>
+        <p class="name">
+            xuesongtan
+        </p>
+        <p class="slogan">流连矣 忘景幻云催 峦栈醺醺说旧梦 重山迟迟映霞辉 向晚共邀归</p>
     </div>
-      </footer>
+</div>
     
-  </article>
-  
-  
-  
+        
+<div class="box widget">
+    <div class="title">Recent</div>
+    <ul class="item-box">
+        
+            
+                <li><a href="/2020/12/03/Docker%E6%95%99%E7%A8%8B%E8%AE%B2%E8%A7%A3/">Docker 教程讲解</a></li>
+            
+        
+            
+                <li><a href="/2020/11/03/Docker%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E6%90%AD%E5%BB%BA/">Docker 搭建私有仓库</a></li>
+            
+        
+            
+                <li><a href="/2020/10/03/Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">Docker 命令大全</a></li>
+            
+        
+            
+                <li><a href="/2020/09/03/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/">Docker Dockerfile</a></li>
+            
+        
+            
+                <li><a href="/2020/08/03/Elasticsearch%E9%9B%86%E7%BE%A4/">Elasticsearch集群搭建</a></li>
+            
+        
+            
+                <li><a href="/2020/07/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程讲解</a></li>
+            
+        
+            
+                <li><a href="/2020/06/03/Maven%E7%9F%A5%E8%AF%86%E5%BA%93/">Maven知识库</a></li>
+            
+        
+            
+                <li><a href="/2020/06/03/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">Redis集群安装部署</a></li>
+            
+        
+    </ul>
+</div>
 
+    
+        
+    
+        
+  <div class="box widget">
+    <div class="title">Archives</div>
+    <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020-12</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">2020-11</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">2020-10</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020-09</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020-08</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020-07</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">2020-06</a><span class="archive-list-count">2</span></li></ul>
+  </div>
 
-
-          </div>
-          
+    
+        
+    
+</div>
+        </section>
+        <footer class="footer">
+    <div class="global-width footer-box">
+        <div class="copyright">
+            <span>Copyright &copy; 2019</span>
+            <span class="dotted">|</span>
+            <span>Powered by <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a></span>
+            <span class="dotted">|</span>
+            <span>Theme by <a href="javascript:">Loren</a></span>
+            <span class="dotted">|</span>
+            <span><a target="_blank" rel="noopener" href="http://www.beian.miit.gov.cn">浙ICP备18016660号-1</a></span>
+        </div>
+    </div>
+</footer>
+    </div>
 
 <script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
+    hljs.initHighlightingOnLoad();
 </script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          Table of Contents
-        </li>
-        <li class="sidebar-nav-overview">
-          Overview
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%9F%A5%E7%9C%8B%E7%BA%BF%E7%A8%8B%E4%BF%A1%E6%81%AF%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1.查看线程信息：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81"><span class="nav-number">2.</span> <span class="nav-text">2.线程状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">3.守护线程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E7%BA%BF%E7%A8%8B%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%EF%BC%88Thread-Context-Switch%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">4.线程上下文切换（Thread Context Switch）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">5.常见方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#sleep-amp-yield"><span class="nav-number">5.1.</span> <span class="nav-text">sleep&amp;yield</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#join"><span class="nav-number">5.2.</span> <span class="nav-text">join</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#interrupt"><span class="nav-number">5.3.</span> <span class="nav-text">interrupt</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E4%B8%A4%E9%98%B6%E6%AE%B5%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F%E2%80%94interrupt%E5%AE%9E%E7%8E%B0"><span class="nav-number">6.</span> <span class="nav-text">6.两阶段终止模式—interrupt实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E9%94%81"><span class="nav-number">7.</span> <span class="nav-text">7.锁</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#7-1-%E4%B8%B4%E7%95%8C%E5%8C%BA%EF%BC%9A"><span class="nav-number">7.1.</span> <span class="nav-text">7.1 临界区：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-2%E7%AB%9E%E6%80%81%E6%9D%A1%E4%BB%B6"><span class="nav-number">7.2.</span> <span class="nav-text">7.2竞态条件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-3%E6%96%B9%E6%B3%95%E4%B8%8Asynchronized"><span class="nav-number">7.3.</span> <span class="nav-text">7.3方法上synchronized</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-4-Java%E5%AF%B9%E8%B1%A1%E5%A4%B4"><span class="nav-number">7.4.</span> <span class="nav-text">7.4 Java对象头</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-5-Monitor"><span class="nav-number">7.5.</span> <span class="nav-text">7.5 Monitor</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-6-synchronized%E5%AD%97%E8%8A%82%E7%A0%81"><span class="nav-number">7.6.</span> <span class="nav-text">7.6 synchronized字节码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-7-%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81"><span class="nav-number">7.7.</span> <span class="nav-text">7.7 轻量级锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-8-%E9%94%81%E8%86%A8%E8%83%80"><span class="nav-number">7.8.</span> <span class="nav-text">7.8 锁膨胀</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-9-%E8%87%AA%E6%97%8B%E4%BC%98%E5%8C%96"><span class="nav-number">7.9.</span> <span class="nav-text">7.9 自旋优化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-10-%E5%81%8F%E5%90%91%E9%94%81"><span class="nav-number">7.10.</span> <span class="nav-text">7.10 偏向锁</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#7-10-1-%E5%81%8F%E5%90%91%E7%8A%B6%E6%80%81"><span class="nav-number">7.10.1.</span> <span class="nav-text">7.10.1 偏向状态</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-10-2-%E6%92%A4%E9%94%80-%E8%B0%83%E7%94%A8hashcode"><span class="nav-number">7.10.2.</span> <span class="nav-text">7.10.2 撤销-调用hashcode</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-10-3-%E6%92%A4%E9%94%80-%E5%85%B6%E4%BB%96%E7%BA%BF%E7%A8%8B%E4%BD%BF%E7%94%A8%E5%AF%B9%E8%B1%A1"><span class="nav-number">7.10.3.</span> <span class="nav-text">7.10.3 撤销-其他线程使用对象</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-10-4-%E6%92%A4%E9%94%80-%E8%B0%83%E7%94%A8wait-notify"><span class="nav-number">7.10.4.</span> <span class="nav-text">7.10.4 撤销-调用wait&#x2F;notify</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-10-5-%E6%89%B9%E9%87%8F%E9%87%8D%E5%81%8F%E5%90%91"><span class="nav-number">7.10.5.</span> <span class="nav-text">7.10.5 批量重偏向</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-10-6-%E6%89%B9%E9%87%8F%E6%92%A4%E9%94%80"><span class="nav-number">7.10.6.</span> <span class="nav-text">7.10.6 批量撤销</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-11-%E9%94%81%E6%B6%88%E9%99%A4"><span class="nav-number">7.11.</span> <span class="nav-text">7.11 锁消除</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-11-%E6%AD%BB%E9%94%81"><span class="nav-number">7.12.</span> <span class="nav-text">7.11 死锁</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#7-11-1-%E5%AE%9A%E4%B9%89"><span class="nav-number">7.12.1.</span> <span class="nav-text">7.11.1 定义</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-11-2-%E6%AD%BB%E9%94%81%E5%AE%9A%E4%BD%8D"><span class="nav-number">7.12.2.</span> <span class="nav-text">7.11.2 死锁定位</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-11-3-%E6%AD%BB%E9%94%81%E7%8E%B0%E8%B1%A1-%E5%93%B2%E5%AD%A6%E5%AE%B6%E5%B0%B1%E9%A4%90"><span class="nav-number">7.12.3.</span> <span class="nav-text">7.11.3 死锁现象-哲学家就餐</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-ReentrantLock"><span class="nav-number">8.</span> <span class="nav-text">8.ReentrantLock</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#8-1-%E5%8F%AF%E9%87%8D%E5%85%A5"><span class="nav-number">8.1.</span> <span class="nav-text">8.1 可重入</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#8-2-%E5%8F%AF%E6%89%93%E6%96%AD"><span class="nav-number">8.2.</span> <span class="nav-text">8.2 可打断</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#8-3-%E9%94%81%E8%B6%85%E6%97%B6"><span class="nav-number">8.3.</span> <span class="nav-text">8.3 锁超时</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#8-4-%E5%93%B2%E5%AD%A6%E5%AE%B6%E5%B0%B1%E9%A4%90%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3%E5%86%B3"><span class="nav-number">8.4.</span> <span class="nav-text">8.4 哲学家就餐问题的解决</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-wait-amp-notify"><span class="nav-number">9.</span> <span class="nav-text">9.wait&amp;notify</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#9-1-API%E4%BB%8B%E7%BB%8D"><span class="nav-number">9.1.</span> <span class="nav-text">9.1 API介绍</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#9-2-wait-sleep%E5%8C%BA%E5%88%AB"><span class="nav-number">9.2.</span> <span class="nav-text">9.2 wait sleep区别</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2"><span class="nav-number">10.</span> <span class="nav-text">10.线程状态转换</span></a></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">xuesongtan</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">8</span>
-          <span class="site-state-item-name">posts</span>
-        </a>
-      </div>
-  </nav>
-</div>
-
-
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2020</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">xuesongtan</span>
-</div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
-  </div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/muse.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
 </body>
 </html>
