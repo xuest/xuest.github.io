@@ -20,19 +20,19 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="命令介绍docker是传统的CS架构分为docker client和docker server docker 客户端非常简单 ,我们可以直接输入 docker 命令来查看到 Docker 客户端的所有命令选项。 docker的镜像管理 #查看镜像列表:  docker images  docker image ls  #导出镜像:  docker image save centos &gt; do">
+  <meta name="description" content="命令介绍docker是传统的CS架构分为docker client和docker server docker 客户端非常简单 ,我们可以直接输入 docker 命令来查看到 Docker 客户端的所有命令选项。 docker的镜像管理#查看镜像列表:  docker images  docker image ls  #导出镜像:  docker image save centos &gt; doc">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker 命令大全">
-<meta property="og:url" content="http://example.com/2020/12/03/Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/index.html">
+<meta property="og:url" content="http://example.com/2020/10/03/Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/index.html">
 <meta property="og:site_name" content="Augustxuesong">
-<meta property="og:description" content="命令介绍docker是传统的CS架构分为docker client和docker server docker 客户端非常简单 ,我们可以直接输入 docker 命令来查看到 Docker 客户端的所有命令选项。 docker的镜像管理 #查看镜像列表:  docker images  docker image ls  #导出镜像:  docker image save centos &gt; do">
+<meta property="og:description" content="命令介绍docker是传统的CS架构分为docker client和docker server docker 客户端非常简单 ,我们可以直接输入 docker 命令来查看到 Docker 客户端的所有命令选项。 docker的镜像管理#查看镜像列表:  docker images  docker image ls  #导出镜像:  docker image save centos &gt; doc">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-12-03T05:59:50.000Z">
-<meta property="article:modified_time" content="2020-12-03T06:20:20.163Z">
+<meta property="article:published_time" content="2020-10-03T05:59:50.000Z">
+<meta property="article:modified_time" content="2020-12-04T03:01:38.667Z">
 <meta property="article:author" content="xuesongtan">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2020/12/03/Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+<link rel="canonical" href="http://example.com/2020/10/03/Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
 
 
 <script id="page-configurations">
@@ -151,7 +151,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/03/Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/03/Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -173,10 +173,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-12-03 13:59:50 / Modified: 14:20:20" itemprop="dateCreated datePublished" datetime="2020-12-03T13:59:50+08:00">2020-12-03</time>
+              <time title="Created: 2020-10-03 13:59:50" itemprop="dateCreated datePublished" datetime="2020-10-03T13:59:50+08:00">2020-10-03</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-12-04 11:01:38" itemprop="dateModified" datetime="2020-12-04T11:01:38+08:00">2020-12-04</time>
+              </span>
 
           
 
@@ -191,8 +197,7 @@
       
         <h2 id="命令介绍"><a href="#命令介绍" class="headerlink" title="命令介绍"></a>命令介绍</h2><p>docker是传统的CS架构分为docker client和docker server</p>
 <p>docker 客户端非常简单 ,我们可以直接输入 docker 命令来查看到 Docker 客户端的所有命令选项。</p>
-<p><strong>docker的镜像管理</strong></p>
-<p>#查看镜像列表: </p>
+<h3 id="docker的镜像管理"><a href="#docker的镜像管理" class="headerlink" title="docker的镜像管理"></a><strong>docker的镜像管理</strong></h3><p>#查看镜像列表: </p>
 <p>docker images </p>
 <p>docker image ls </p>
 <p>#导出镜像: </p>
@@ -218,8 +223,7 @@
 <p>docker history image_name    </p>
 <p>#使用当前目录下的Dockerfile构建镜像</p>
 <p>docker build -t <image-name> .   </p>
-<p><strong>docker的容器管理</strong></p>
-<p>#查看版本</p>
+<h3 id="docker的容器管理"><a href="#docker的容器管理" class="headerlink" title="docker的容器管理"></a><strong>docker的容器管理</strong></h3><p>#查看版本</p>
 <p>docker -v     </p>
 <p>#查看docker信息    </p>
 <p>docker info     </p>
@@ -270,7 +274,7 @@
 <p>–name 指定容器的名字  </p>
 <p>/bin/sh覆盖容器的初始命令 </p>
 <p>启动命名：docker run -d -p 80:80  -v   waibulj:内部路径  –name</p>
-<h2 id="docker命令集"><a href="#docker命令集" class="headerlink" title="docker命令集"></a>docker命令集</h2><table>
+<h3 id="docker命令集"><a href="#docker命令集" class="headerlink" title="docker命令集"></a>docker命令集</h3><table>
 <thead>
 <tr>
 <th>命令</th>
@@ -1294,12 +1298,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/12/01/Docker%E6%95%99%E7%A8%8B%E8%AE%B2%E8%A7%A3/" rel="prev" title="">
-      <i class="fa fa-chevron-left"></i> 
+    <a href="/2020/09/03/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/" rel="prev" title="Docker Dockerfile">
+      <i class="fa fa-chevron-left"></i> Docker Dockerfile
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/12/03/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="next" title="多线程讲解">
-      多线程讲解 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/11/03/Docker%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E6%90%AD%E5%BB%BA/" rel="next" title="Docker 搭建私有仓库">
+      Docker 搭建私有仓库 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -1359,7 +1363,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">命令介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E5%91%BD%E4%BB%A4%E9%9B%86"><span class="nav-number">2.</span> <span class="nav-text">docker命令集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#run%E5%91%BD%E4%BB%A4"><span class="nav-number">2.1.</span> <span class="nav-text">run命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#start%E5%91%BD%E4%BB%A4"><span class="nav-number">2.2.</span> <span class="nav-text">start命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E8%BF%90%E7%BB%B4%E6%93%8D%E4%BD%9C"><span class="nav-number">2.3.</span> <span class="nav-text">容器运维操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93attach%E5%91%BD%E4%BB%A4"><span class="nav-number">2.3.1.</span> <span class="nav-text">–attach命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93inspect%E5%91%BD%E4%BB%A4"><span class="nav-number">2.3.2.</span> <span class="nav-text">–inspect命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8%E7%9A%84%E4%BF%A1%E6%81%AFcontainer%EF%BC%88ps%EF%BC%89"><span class="nav-number">2.3.3.</span> <span class="nav-text">查看容器的信息container（ps）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%80%93-%E5%88%97%E5%87%BA%E6%9C%BA%E5%99%A8%E4%B8%8A%E7%9A%84%E9%95%9C%E5%83%8F%EF%BC%88images%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">– 列出机器上的镜像（images）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%9C%A8docker-index%E4%B8%AD%E6%90%9C%E7%B4%A2image%EF%BC%88search%EF%BC%89"><span class="nav-number">2.5.</span> <span class="nav-text">2. 在docker index中搜索image（search）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%BB%8Edocker-registry-server-%E4%B8%AD%E4%B8%8B%E6%8B%89image%E6%88%96repository%EF%BC%88pull%EF%BC%89"><span class="nav-number">2.6.</span> <span class="nav-text">3. 从docker registry server 中下拉image或repository（pull）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%8E%A8%E9%80%81%E4%B8%80%E4%B8%AAimage%E6%88%96repository%E5%88%B0registry%EF%BC%88push%EF%BC%89"><span class="nav-number">2.7.</span> <span class="nav-text">4. 推送一个image或repository到registry（push）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E4%BB%8Eimage%E5%90%AF%E5%8A%A8%E4%B8%80%E4%B8%AAcontainer%EF%BC%88run%EF%BC%89"><span class="nav-number">2.8.</span> <span class="nav-text">5. 从image启动一个container（run）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E4%BD%BF%E7%94%A8image%E5%88%9B%E5%BB%BAcontainer%E5%B9%B6%E6%89%A7%E8%A1%8C%E7%9B%B8%E5%BA%94%E5%91%BD%E4%BB%A4%EF%BC%8C%E7%84%B6%E5%90%8E%E5%81%9C%E6%AD%A2"><span class="nav-number">2.8.1.</span> <span class="nav-text">5.1 使用image创建container并执行相应命令，然后停止</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8image%E5%88%9B%E5%BB%BAcontainer%E5%B9%B6%E8%BF%9B%E5%85%A5%E4%BA%A4%E4%BA%92%E6%A8%A1%E5%BC%8F-login-shell%E6%98%AF-bin-bash"><span class="nav-number">2.8.2.</span> <span class="nav-text">使用image创建container并进入交互模式, login shell是&#x2F;bin&#x2F;bash</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-%E8%BF%90%E8%A1%8C%E5%87%BA%E4%B8%80%E4%B8%AAcontainer%E6%94%BE%E5%88%B0%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C"><span class="nav-number">2.8.3.</span> <span class="nav-text">5.2 运行出一个container放到后台运行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-%E6%98%A0%E5%B0%84host%E5%88%B0container%E7%9A%84%E7%AB%AF%E5%8F%A3%E5%92%8C%E7%9B%AE%E5%BD%95"><span class="nav-number">2.8.4.</span> <span class="nav-text">5.3 映射host到container的端口和目录</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%B0%86%E4%B8%80%E4%B8%AAcontainer%E5%9B%BA%E5%8C%96%E4%B8%BA%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84image%EF%BC%88commit%EF%BC%89"><span class="nav-number">2.9.</span> <span class="nav-text">6. 将一个container固化为一个新的image（commit）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%80%E5%90%AF-%E5%81%9C%E6%AD%A2-%E9%87%8D%E5%90%AFcontainer%EF%BC%88start-stop-restart%EF%BC%89"><span class="nav-number">2.10.</span> <span class="nav-text">1. 开启&#x2F;停止&#x2F;重启container（start&#x2F;stop&#x2F;restart）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%BF%9E%E6%8E%A5%E5%88%B0%E6%AD%A3%E5%9C%A8%E8%BF%90%E8%A1%8C%E4%B8%AD%E7%9A%84container%EF%BC%88attach%EF%BC%89"><span class="nav-number">2.11.</span> <span class="nav-text">2. 连接到正在运行中的container（attach）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%9F%A5%E7%9C%8Bimage%E6%88%96container%E7%9A%84%E5%BA%95%E5%B1%82%E4%BF%A1%E6%81%AF%EF%BC%88inspect%EF%BC%89"><span class="nav-number">2.12.</span> <span class="nav-text">3. 查看image或container的底层信息（inspect）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%88%A0%E9%99%A4%E4%B8%80%E4%B8%AA%E6%88%96%E5%A4%9A%E4%B8%AAcontainer%E3%80%81image%EF%BC%88rm%E3%80%81rmi%EF%BC%89"><span class="nav-number">2.13.</span> <span class="nav-text">4. 删除一个或多个container、image（rm、rmi）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-docker-build-%E4%BD%BF%E7%94%A8%E6%AD%A4%E9%85%8D%E7%BD%AE%E7%94%9F%E6%88%90%E6%96%B0%E7%9A%84image"><span class="nav-number">2.14.</span> <span class="nav-text">5. docker build 使用此配置生成新的image</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E7%BB%99%E9%95%9C%E5%83%8F%E6%89%93%E4%B8%8A%E6%A0%87%E7%AD%BE%EF%BC%88tag%EF%BC%89"><span class="nav-number">2.15.</span> <span class="nav-text">6. 给镜像打上标签（tag）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8%E7%9A%84%E4%BF%A1%E6%81%AFcontainer%EF%BC%88ps%EF%BC%89"><span class="nav-number">2.16.</span> <span class="nav-text">7. 查看容器的信息container（ps）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8%E4%B8%AD%E6%AD%A3%E5%9C%A8%E8%BF%90%E8%A1%8C%E7%9A%84%E8%BF%9B%E7%A8%8B%EF%BC%88top%EF%BC%89"><span class="nav-number">2.17.</span> <span class="nav-text">8. 查看容器中正在运行的进程（top）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E5%85%B6%E4%BB%96%E5%91%BD%E4%BB%A4"><span class="nav-number">2.18.</span> <span class="nav-text">9. 其他命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#events%E3%80%81history%E5%92%8Clogs%E5%91%BD%E4%BB%A4"><span class="nav-number">2.19.</span> <span class="nav-text">events、history和logs命令</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">命令介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E7%9A%84%E9%95%9C%E5%83%8F%E7%AE%A1%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">docker的镜像管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E7%9A%84%E5%AE%B9%E5%99%A8%E7%AE%A1%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">docker的容器管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E5%91%BD%E4%BB%A4%E9%9B%86"><span class="nav-number">1.3.</span> <span class="nav-text">docker命令集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#run%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.</span> <span class="nav-text">run命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#start%E5%91%BD%E4%BB%A4"><span class="nav-number">1.5.</span> <span class="nav-text">start命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E8%BF%90%E7%BB%B4%E6%93%8D%E4%BD%9C"><span class="nav-number">1.6.</span> <span class="nav-text">容器运维操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93attach%E5%91%BD%E4%BB%A4"><span class="nav-number">1.6.1.</span> <span class="nav-text">–attach命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93inspect%E5%91%BD%E4%BB%A4"><span class="nav-number">1.6.2.</span> <span class="nav-text">–inspect命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8%E7%9A%84%E4%BF%A1%E6%81%AFcontainer%EF%BC%88ps%EF%BC%89"><span class="nav-number">1.6.3.</span> <span class="nav-text">查看容器的信息container（ps）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%80%93-%E5%88%97%E5%87%BA%E6%9C%BA%E5%99%A8%E4%B8%8A%E7%9A%84%E9%95%9C%E5%83%8F%EF%BC%88images%EF%BC%89"><span class="nav-number">1.7.</span> <span class="nav-text">– 列出机器上的镜像（images）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%9C%A8docker-index%E4%B8%AD%E6%90%9C%E7%B4%A2image%EF%BC%88search%EF%BC%89"><span class="nav-number">1.8.</span> <span class="nav-text">2. 在docker index中搜索image（search）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%BB%8Edocker-registry-server-%E4%B8%AD%E4%B8%8B%E6%8B%89image%E6%88%96repository%EF%BC%88pull%EF%BC%89"><span class="nav-number">1.9.</span> <span class="nav-text">3. 从docker registry server 中下拉image或repository（pull）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%8E%A8%E9%80%81%E4%B8%80%E4%B8%AAimage%E6%88%96repository%E5%88%B0registry%EF%BC%88push%EF%BC%89"><span class="nav-number">1.10.</span> <span class="nav-text">4. 推送一个image或repository到registry（push）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E4%BB%8Eimage%E5%90%AF%E5%8A%A8%E4%B8%80%E4%B8%AAcontainer%EF%BC%88run%EF%BC%89"><span class="nav-number">1.11.</span> <span class="nav-text">5. 从image启动一个container（run）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E4%BD%BF%E7%94%A8image%E5%88%9B%E5%BB%BAcontainer%E5%B9%B6%E6%89%A7%E8%A1%8C%E7%9B%B8%E5%BA%94%E5%91%BD%E4%BB%A4%EF%BC%8C%E7%84%B6%E5%90%8E%E5%81%9C%E6%AD%A2"><span class="nav-number">1.11.1.</span> <span class="nav-text">5.1 使用image创建container并执行相应命令，然后停止</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8image%E5%88%9B%E5%BB%BAcontainer%E5%B9%B6%E8%BF%9B%E5%85%A5%E4%BA%A4%E4%BA%92%E6%A8%A1%E5%BC%8F-login-shell%E6%98%AF-bin-bash"><span class="nav-number">1.11.2.</span> <span class="nav-text">使用image创建container并进入交互模式, login shell是&#x2F;bin&#x2F;bash</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-%E8%BF%90%E8%A1%8C%E5%87%BA%E4%B8%80%E4%B8%AAcontainer%E6%94%BE%E5%88%B0%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C"><span class="nav-number">1.11.3.</span> <span class="nav-text">5.2 运行出一个container放到后台运行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-%E6%98%A0%E5%B0%84host%E5%88%B0container%E7%9A%84%E7%AB%AF%E5%8F%A3%E5%92%8C%E7%9B%AE%E5%BD%95"><span class="nav-number">1.11.4.</span> <span class="nav-text">5.3 映射host到container的端口和目录</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%B0%86%E4%B8%80%E4%B8%AAcontainer%E5%9B%BA%E5%8C%96%E4%B8%BA%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84image%EF%BC%88commit%EF%BC%89"><span class="nav-number">1.12.</span> <span class="nav-text">6. 将一个container固化为一个新的image（commit）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%80%E5%90%AF-%E5%81%9C%E6%AD%A2-%E9%87%8D%E5%90%AFcontainer%EF%BC%88start-stop-restart%EF%BC%89"><span class="nav-number">1.13.</span> <span class="nav-text">1. 开启&#x2F;停止&#x2F;重启container（start&#x2F;stop&#x2F;restart）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%BF%9E%E6%8E%A5%E5%88%B0%E6%AD%A3%E5%9C%A8%E8%BF%90%E8%A1%8C%E4%B8%AD%E7%9A%84container%EF%BC%88attach%EF%BC%89"><span class="nav-number">1.14.</span> <span class="nav-text">2. 连接到正在运行中的container（attach）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%9F%A5%E7%9C%8Bimage%E6%88%96container%E7%9A%84%E5%BA%95%E5%B1%82%E4%BF%A1%E6%81%AF%EF%BC%88inspect%EF%BC%89"><span class="nav-number">1.15.</span> <span class="nav-text">3. 查看image或container的底层信息（inspect）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%88%A0%E9%99%A4%E4%B8%80%E4%B8%AA%E6%88%96%E5%A4%9A%E4%B8%AAcontainer%E3%80%81image%EF%BC%88rm%E3%80%81rmi%EF%BC%89"><span class="nav-number">1.16.</span> <span class="nav-text">4. 删除一个或多个container、image（rm、rmi）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-docker-build-%E4%BD%BF%E7%94%A8%E6%AD%A4%E9%85%8D%E7%BD%AE%E7%94%9F%E6%88%90%E6%96%B0%E7%9A%84image"><span class="nav-number">1.17.</span> <span class="nav-text">5. docker build 使用此配置生成新的image</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E7%BB%99%E9%95%9C%E5%83%8F%E6%89%93%E4%B8%8A%E6%A0%87%E7%AD%BE%EF%BC%88tag%EF%BC%89"><span class="nav-number">1.18.</span> <span class="nav-text">6. 给镜像打上标签（tag）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8%E7%9A%84%E4%BF%A1%E6%81%AFcontainer%EF%BC%88ps%EF%BC%89"><span class="nav-number">1.19.</span> <span class="nav-text">7. 查看容器的信息container（ps）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8%E4%B8%AD%E6%AD%A3%E5%9C%A8%E8%BF%90%E8%A1%8C%E7%9A%84%E8%BF%9B%E7%A8%8B%EF%BC%88top%EF%BC%89"><span class="nav-number">1.20.</span> <span class="nav-text">8. 查看容器中正在运行的进程（top）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E5%85%B6%E4%BB%96%E5%91%BD%E4%BB%A4"><span class="nav-number">1.21.</span> <span class="nav-text">9. 其他命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#events%E3%80%81history%E5%92%8Clogs%E5%91%BD%E4%BB%A4"><span class="nav-number">1.22.</span> <span class="nav-text">events、history和logs命令</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
