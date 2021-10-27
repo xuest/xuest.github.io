@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <meta name="description" content="Dockerfile什么是 Dockerfile？Dockerfile 是一个用来构建镜像的文本文件，文本内容包含了一条条构建镜像所需的指令和说明。
+一.Dockerfile基本结构一般的，Dockerfile 分为四部分：基础镜像信息、维护者信息、镜像操作指令和容器启动时执行指令
+12345678" />
+  
+
+  
+  
+  
+  
+  
+  
+  <title>Docker Dockerfile | Augustxuesong</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Dockerfile什么是 Dockerfile？Dockerfile 是一个用来构建镜像的文本文件，文本内容包含了一条条构建镜像所需的指令和说明。 一.Dockerfile基本结构一般的，Dockerfile 分为四部分：基础镜像信息、维护者信息、镜像操作指令和容器启动时执行指令 123456789101112131415161718192021222324# This Nuxt.js Dock">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker Dockerfile">
+<meta property="og:url" content="http://example.com/2020/09/03/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/index.html">
+<meta property="og:site_name" content="Augustxuesong">
+<meta property="og:description" content="Dockerfile什么是 Dockerfile？Dockerfile 是一个用来构建镜像的文本文件，文本内容包含了一条条构建镜像所需的指令和说明。 一.Dockerfile基本结构一般的，Dockerfile 分为四部分：基础镜像信息、维护者信息、镜像操作指令和容器启动时执行指令 123456789101112131415161718192021222324# This Nuxt.js Dock">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-09-03T05:59:50.000Z">
+<meta property="article:modified_time" content="2020-12-04T03:00:55.438Z">
+<meta property="article:author" content="xuesongtan">
+<meta name="twitter:card" content="summary">
+  
+  
+    <link rel="icon" href="/css/images/favicon.ico">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+
+  
+  <!-- baidu webmaster push -->
+  <script src='//push.zhanzhang.baidu.com/push.js'></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body class="home blog custom-background custom-font-enabled single-author">
+  <div id="page" class="hfeed site">
+      <header id="masthead" class="site-header" role="banner">
+    <hgroup>
+      <h1 class="site-title">
+        <a href="/" title="Augustxuesong" rel="home">Augustxuesong</a>
+      </h1>
+      
+        <h2 class="site-description hitokoto"></h2>
+        <script type="text/javascript" src="https://v1.hitokoto.cn/?encode=js"></script>
+      
+    </hgroup>
+
+    <nav id="site-navigation" class="main-navigation" role="navigation">
+            <button class="menu-toggle">菜单</button>
+            <a class="assistive-text" href="/#content" title="跳至内容">跳至内容</a><!--TODO-->
+            <div class="menu-main-container">
+                <ul id="menu-main" class="nav-menu">
+                
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/">Home</a></li>
+                
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/archives">Archives</a></li>
+                
+                </ul>
+            </div>
+    </nav>
+</header>
+
+      <div id="main" class="wrapper">
+        <div id="primary" class="site-content"><div id="content" role="main"><article id="post-Dockerfile构建镜像" class="post-Dockerfile构建镜像 post type-post status-publish format-standard hentry">
+    <!---->
+
+      <header class="entry-header">
+        
+        
+  
+    <h1 class="entry-title article-title">
+      Docker Dockerfile
+    </h1>
+  
+
+        
+        <div class="comments-link">
+            
+            <a href="javascript:void(0);" data-url="http://example.com/2020/09/03/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/" data-id="ckv8x077v0000gchxag6ydp4u" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>
+        </div><!-- .comments-link -->
+      </header><!-- .entry-header -->
+
+    <div class="entry-content">
+      
+        <h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><h3 id="什么是-Dockerfile？"><a href="#什么是-Dockerfile？" class="headerlink" title="什么是 Dockerfile？"></a>什么是 Dockerfile？</h3><p>Dockerfile 是一个用来构建镜像的文本文件，文本内容包含了一条条构建镜像所需的指令和说明。</p>
+<h4 id="一-Dockerfile基本结构"><a href="#一-Dockerfile基本结构" class="headerlink" title="一.Dockerfile基本结构"></a>一.Dockerfile基本结构</h4><p>一般的，Dockerfile 分为四部分：基础镜像信息、维护者信息、镜像操作指令和容器启动时执行指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># This Nuxt.js Dockerfile</span></span><br><span class="line"><span class="comment"># FROM </span></span><br><span class="line">MAINTAINER Xuest</span><br><span class="line"><span class="comment"># Base images 基础镜像</span></span><br><span class="line">FROM registry.ihdou.com/node:10.15.3-alpine</span><br><span class="line"><span class="comment">#MAINTAINER 维护者信息</span></span><br><span class="line">MAINTAINER Xuest </span><br><span class="line"><span class="comment">#ENV 设置环境变量</span></span><br><span class="line">ENV NODE_ENV=production</span><br><span class="line">ENV HOST 0.0.0.0</span><br><span class="line"><span class="comment">#RUN 执行以下命令 </span></span><br><span class="line">RUN mkdir -p /social-statics-app</span><br><span class="line"><span class="comment">#COPY </span></span><br><span class="line">COPY . /social-statics-app</span><br><span class="line"><span class="comment">#WORKDIR 相当于cd</span></span><br><span class="line">WORKDIR /social-statics-app</span><br><span class="line"><span class="comment">#EXPOSE 映射端口</span></span><br><span class="line">EXPOSE 3000</span><br><span class="line">RUN npm install</span><br><span class="line">RUN npm rebuild node-sass</span><br><span class="line">RUN npm run build</span><br><span class="line">RUN npm cache clean --force</span><br><span class="line"><span class="comment">#CMD 运行以下命令</span></span><br><span class="line">CMD [<span class="string">&quot;npm&quot;</span>, <span class="string">&quot;start&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<p>1、FROM : 指定基础镜像，要在哪个镜像建立</p>
+<p>格式为 <code>FROM &lt;image&gt; 或FROM &lt;image&gt;:&lt;tag&gt; 。</code></p>
+<p>第一条指令必须为 FROM 指令。**定制的镜像都是基于 FROM 的镜像，这里的 image就是定制需要的基础镜像。后续的操作都是基于 image。</p>
+<p>2、MAINTAINER：指定维护者信息</p>
+<p>格式为 <code>MAINTAINER &lt;name&gt;</code></p>
+<p>3、RUN：在镜像中要执行的命令</p>
+<p>格式为 <code>RUN &lt;command&gt; 或 RUN [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</code>，前者将在 shell 终端中运行命令，即 /bin/bash -c ；后者则使用 exec 执行。指定使用其它终端可以通过第二种方式实现，例如 <code>RUN [“/bin/bash”, “-c”,”echo hello”]</code> 。</p>
+<p>4、WORKDIR：指定当前工作目录，相当于 cd</p>
+<p>格式为 <code>WORKDIR /path/to/workdir</code></p>
+<p>5、EXPOSE：指定容器要打开的端口</p>
+<p>格式为 <code>EXPOSE &lt;port&gt; [&lt;port&gt;...]</code>，告诉 Docker 服务端容器暴露的端口号，供互联系统使用。在启动容器时需要通过 -P，Docker 主机会自动分配一个端口转发到指定的端口。</p>
+<p>6、ENV：定义环境变量</p>
+<p>格式为 <code>ENV &lt;key&gt; &lt;value&gt;</code> 。 指定一个环境变量，会被后续 RUN 指令使用，并在容器运行时保持。</p>
+<p>ENV PATH /usr/local/nginx/sbin:$PATH</p>
+<p>7、COPY </p>
+<p>复制本地主机的 （为 Dockerfile 所在目录的相对路径）到容器中的</p>
+<p>8、ADD</p>
+<p>相当于 COPY，但是比 COPY 功能更强大</p>
+<p>格式为 <code>ADD &lt;src&gt; &lt;dest&gt;</code>，该命令将复制指定的 到容器中的 。 其中 可以是Dockerfile所在目录的一个相对路径；也可以是一个 URL；还可以是一个 tar 文件，复制进容器会自动解压。</p>
+<p>9、VOLUME</p>
+<p>挂载目录 格式为<code>VOLUME [&quot;/data&quot;]</code>，创建一个可以从本地主机或其他容器挂载的挂载点，一般用来存放数据库和需要保持的数据等。</p>
+<p>10、USER</p>
+<p>格式为 <code>USER daemon</code>，指定运行容器时的用户名或 UID，后续的 RUN 也会使用指定用户。当服务不需要管理员权限时，可以通过该命令指定运行用户。并且可以在之前创建所需要的用户，例如： RUN useradd -s /sbin/nologin -M www。</p>
+<p>11、ENTRYPOINT</p>
+<p>ENTRYPOINT [“executable”, “param1”, “param2”] ENTRYPOINT command param1 param2 （shell中执行）</p>
+<p>配置容器启动后执行的命令，并且不可被 docker run 提供的参数覆盖。每个 Dockerfile 中只能有一个 ENTRYPOINT ，当指定多个时，只有最后一个起效。</p>
+<p>12、CMD</p>
+<p>CMD [“executable”,”param1”,”param2”] 使用 exec 执行，推荐方式；CMD command param1 param2 在 /bin/bash 中执行，提供给需要交互的应用；CMD [“param1”,”param2”] 提供给 ENTRYPOINT 的默认参数；指定启动容器时执行的命令，每个 Dockerfile 只能有一条 CMD 命令。如果指定了多条命令，只有最后一条会被执行。如果用户启动容器时候指定了运行的命令，则会覆盖掉 CMD 指定的命令</p>
+<p>13、ONBUILD</p>
+<p>格式为 <code>ONBUILD [INSTRUCTION]</code>，在构建本镜像时不生效，在基于此镜像构建镜像时生效。配置当所创建的镜像作为其它新创建镜像的基础镜像时，所执行的操作指令。</p>
+<p>注意：</p>
+<p>ENTRYPOINT 和 CMD 的区别：ENTRYPOINT 指定了该镜像启动时的入口，CMD 则指定了容器启动时的命令，当两者共用时，完整的启动命令像是 ENTRYPOINT + CMD 这样。使用 ENTRYPOINT 的好处是在我们启动镜像就像是启动了一个可执行程序，在 CMD 上仅需要指定参数；另外在我们需要自定义 CMD 时不容易出错。</p>
+<p>使用 CMD 的 Dockerfile：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@sta2 test]<span class="meta"># cat Dockerfile FROM mysql CMD [<span class="meta-string">&quot;echo&quot;</span>,<span class="meta-string">&quot;test&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>使用 ENTRYPOINT 的 Dockerfile</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@sta2 entrypoint]<span class="meta">#  cat  Dockerfile FROM mysql ENTRYPOINT [<span class="meta-string">&quot;echo&quot;</span>,<span class="meta-string">&quot;test&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>结论：ENTRYPOINT 不能覆盖掉执行时的参数，CMD 可以掉覆盖默认的参数。</p>
+<p>demo</p>
+<p>Jar例子：</p>
+<p>FROM registry.ihdou.com/java8<br>LABEL maintainer Xuest<br>ADD social-search-server-1.0.0-SNAPSHOT.jar search.jar<br>EXPOSE 10014 19997<br>ENTRYPOINT [“java”,”-jar”,”search.jar”]</p>
+<p>VUE Nuxt例子：</p>
+<p>FROM registry.ihdou.com/node:10.15.3-alpine<br>MAINTAINER Xuest<br>ENV NODE_ENV=production<br>ENV HOST 0.0.0.0<br>RUN mkdir -p /social-statics-app<br>COPY . /social-statics-app<br>WORKDIR /social-statics-app<br>EXPOSE 3000<br>RUN npm install<br>RUN npm rebuild node-sass<br>RUN npm run build<br>RUN npm cache clean –force<br>CMD [“npm”, “start”]</p>
+<p>VUE静态：</p>
+<p>FROM registry.ihdou.com/tool/nginx<br>RUN mkdir /usr/share/nginx/html/v4manage<br>COPY nginx.conf /etc/nginx/nginx.conf<br>COPY ./v4manage /usr/share/nginx/html/v4manage<br>EXPOSE 80</p>
+<p>&lt;覆盖容器nginx配置&gt;</p>
+<p>nginx根目录：/usr/share/nginx/html/</p>
+<p>nginx配置地址：/etc/nginx/nginx.conf</p>
+<pre><code>        server &#123;
+                listen       80;
+                server_name  localhost;
+                root    /usr/share/nginx/html/v4manage/;
+                location / &#123;
+                        try_files $uri $uri/ @router;
+                        index  index.html index.htm;
+                &#125;
+                location @router &#123;
+                        rewrite ^.*$ /index.html last;
+                &#125;
+        &#125;</code></pre>
+<h4 id="二-创建镜像"><a href="#二-创建镜像" class="headerlink" title="二.创建镜像"></a>二.创建镜像</h4><p>1、使用Dockerfile构建镜像</p>
+<p>docker build -t v4manage .  </p>
+<p>2.给镜像打标签</p>
+<p>docker tag v4manage  192.168.102.78/4.0/ v4manage </p>
+<p>3.Push仓库</p>
+<p>docker push 192.168.102.78/4.0/ v4manage</p>
+<p>[root@k8s-master harbor]# docker tag 192.168.102.78/v4manage 192.168.102.78/4.0/v4manage<br>[root@k8s-master harbor]# docker push 192.168.102.78/4.0/v4manage<br>The push refers to repository [192.168.102.78/4.0/v4manage]<br>518ec4362654: Pushed<br>ba2c6d9de847: Pushed<br>6f40d5797506: Pushed<br>7e914612e366: Pushed<br>f790aed835ee: Pushed<br>850c2400ea4d: Pushed<br>7ccabd267c9f: Pushed<br>f5600c6330da: Pushed<br>latest: digest: sha256:9f920ab7c9e5f5b5f9673b013b2b68193ca80c0a5236d7c72484e473abe3f659 size: 1987</p>
+
+      
+    </div><!-- .entry-content -->
+
+    <footer class="entry-meta">
+    <a href="/2020/09/03/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/">
+    <time datetime="2020-09-03T05:59:50.000Z" class="entry-date">
+        2020-09-03
+    </time>
+</a>
+    
+    
+    </footer>
+</article>
+
+
+    
+<nav class="nav-single">
+    <h3 class="assistive-text">文章导航</h3>
+    
+        <span class="nav-previous"><a href="/2020/10/03/Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" rel="prev"><span class="meta-nav">←</span> Docker 命令大全</a></span>
+    
+    
+        <span class="nav-next"><a href="/2020/08/03/Elasticsearch%E9%9B%86%E7%BE%A4/" rel="next">Elasticsearch集群搭建 <span class="meta-nav">→</span></a></span>
+    
+</nav><!-- .nav-single -->
+
+
+
+
+
+
+
+</div></div>
+        <div id="secondary" class="widget-area" role="complementary">
+  
+    <aside id="search" class="widget widget_search"><form role="search" method="get" accept-charset="utf-8" id="searchform" class="searchform" action="//google.com/search">
+    <div>
+        <input type="text" value="" name="s" id="s" />
+        <input type="submit" id="searchsubmit" value="搜索" />
+    </div>
+</form></aside>
+  
+    
+  
+    
+  
+    
+  <aside class="widget">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget-content">
+      <ul>
+        
+          <li>
+            <a href="/2020/12/15/K8s%E6%90%AD%E5%BB%BA%E9%83%A8%E7%BD%B2/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/01/Docker%E6%95%99%E7%A8%8B%E8%AE%B2%E8%A7%A3/">Docker 教程讲解</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/03/Docker%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E6%90%AD%E5%BB%BA/">Docker 搭建私有仓库</a>
+          </li>
+        
+          <li>
+            <a href="/2020/10/03/Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">Docker 命令大全</a>
+          </li>
+        
+          <li>
+            <a href="/2020/09/03/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/">Docker Dockerfile</a>
+          </li>
+        
+      </ul>
+    </div>
+  </aside>
+
+  
+    
+  
+    
+  
+</div>
+      </div>
+      <footer id="colophon" role="contentinfo">
+    <p>&copy; 2021 xuesongtan
+    All rights reserved.</p>
+    <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></p>
+</footer>
+    <script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/js/share.js'];</script>
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/navigation.js"></script>
+
+<div id="bg"></div>
+
+  </div>
+</body>
+</html>
