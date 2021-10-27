@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   
   
-  <meta name="description" content="kubeadm部署k8s集群kubeadm是官方社区推出的一个用于快速部署kubernetes集群的工具。
+  <meta name="description" content="kubeadm是官方社区推出的一个用于快速部署kubernetes集群的工具。
 这个工具能通过两条指令完成一个kubernetes集群的部署：
 创建一个 Master 节点 kubeadm init
-将一个 Node 节点加入到当前集群中 kubeadm join &amp;lt" />
+将一个 Node 节点加入到当前集群中 kubeadm join &amp;lt;Master节点的IP和端" />
   
 
   
@@ -16,17 +16,17 @@
   
   
   
-  <title>Augustxuesong</title>
+  <title>kubeadm部署k8s集群 | Augustxuesong</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="kubeadm部署k8s集群kubeadm是官方社区推出的一个用于快速部署kubernetes集群的工具。 这个工具能通过两条指令完成一个kubernetes集群的部署： 创建一个 Master 节点 kubeadm init 将一个 Node 节点加入到当前集群中 kubeadm join &lt;Master节点的IP和端口 &gt; 安装要求123456在开始之前，部署Kubernetes">
+  <meta name="description" content="kubeadm是官方社区推出的一个用于快速部署kubernetes集群的工具。 这个工具能通过两条指令完成一个kubernetes集群的部署： 创建一个 Master 节点 kubeadm init 将一个 Node 节点加入到当前集群中 kubeadm join &lt;Master节点的IP和端口 &gt; 安装要求123456在开始之前，部署Kubernetes集群机器需要满足以下几个条件：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Augustxuesong">
-<meta property="og:url" content="http://example.com/2020/12/15/K8s%E6%90%AD%E5%BB%BA%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:title" content="kubeadm部署k8s集群">
+<meta property="og:url" content="http://example.com/2020/09/03/K8s%E6%90%AD%E5%BB%BA%E9%83%A8%E7%BD%B2/index.html">
 <meta property="og:site_name" content="Augustxuesong">
-<meta property="og:description" content="kubeadm部署k8s集群kubeadm是官方社区推出的一个用于快速部署kubernetes集群的工具。 这个工具能通过两条指令完成一个kubernetes集群的部署： 创建一个 Master 节点 kubeadm init 将一个 Node 节点加入到当前集群中 kubeadm join &lt;Master节点的IP和端口 &gt; 安装要求123456在开始之前，部署Kubernetes">
+<meta property="og:description" content="kubeadm是官方社区推出的一个用于快速部署kubernetes集群的工具。 这个工具能通过两条指令完成一个kubernetes集群的部署： 创建一个 Master 节点 kubeadm init 将一个 Node 节点加入到当前集群中 kubeadm join &lt;Master节点的IP和端口 &gt; 安装要求123456在开始之前，部署Kubernetes集群机器需要满足以下几个条件：">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-12-15T06:15:13.670Z">
-<meta property="article:modified_time" content="2020-12-17T09:38:09.017Z">
+<meta property="article:published_time" content="2020-09-03T05:59:50.000Z">
+<meta property="article:modified_time" content="2021-10-27T02:50:20.655Z">
 <meta property="article:author" content="xuesongtan">
 <meta name="twitter:card" content="summary">
   
@@ -76,16 +76,23 @@
 
       <header class="entry-header">
         
+        
+  
+    <h1 class="entry-title article-title">
+      kubeadm部署k8s集群
+    </h1>
+  
+
+        
         <div class="comments-link">
             
-            <a href="javascript:void(0);" data-url="http://example.com/2020/12/15/K8s%E6%90%AD%E5%BB%BA%E9%83%A8%E7%BD%B2/" data-id="ckv8x07880003gchxbj100lh3" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>
+            <a href="javascript:void(0);" data-url="http://example.com/2020/09/03/K8s%E6%90%AD%E5%BB%BA%E9%83%A8%E7%BD%B2/" data-id="ckv94hbi80005jshx6xtx19ha" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>
         </div><!-- .comments-link -->
       </header><!-- .entry-header -->
 
     <div class="entry-content">
       
-        <hr>
-<h2 id="kubeadm部署k8s集群"><a href="#kubeadm部署k8s集群" class="headerlink" title="kubeadm部署k8s集群"></a>kubeadm部署k8s集群</h2><p>kubeadm是官方社区推出的一个用于快速部署kubernetes集群的工具。</p>
+        <p>kubeadm是官方社区推出的一个用于快速部署kubernetes集群的工具。</p>
 <p>这个工具能通过两条指令完成一个kubernetes集群的部署：</p>
 <p>创建一个 Master 节点 kubeadm init</p>
 <p>将一个 Node 节点加入到当前集群中 kubeadm join &lt;Master节点的IP和端口 &gt;</p>
@@ -109,9 +116,9 @@
     </div><!-- .entry-content -->
 
     <footer class="entry-meta">
-    <a href="/2020/12/15/K8s%E6%90%AD%E5%BB%BA%E9%83%A8%E7%BD%B2/">
-    <time datetime="2020-12-15T06:15:13.670Z" class="entry-date">
-        2020-12-15
+    <a href="/2020/09/03/K8s%E6%90%AD%E5%BB%BA%E9%83%A8%E7%BD%B2/">
+    <time datetime="2020-09-03T05:59:50.000Z" class="entry-date">
+        2020-09-03
     </time>
 </a>
     
@@ -124,8 +131,10 @@
 <nav class="nav-single">
     <h3 class="assistive-text">文章导航</h3>
     
+        <span class="nav-previous"><a href="/2020/09/03/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/" rel="prev"><span class="meta-nav">←</span> Docker Dockerfile</a></span>
     
-        <span class="nav-next"><a href="/2020/12/01/Docker%E6%95%99%E7%A8%8B%E8%AE%B2%E8%A7%A3/" rel="next">Docker 教程讲解 <span class="meta-nav">→</span></a></span>
+    
+        <span class="nav-next"><a href="/2020/08/03/Elasticsearch%E9%9B%86%E7%BE%A4/" rel="next">Elasticsearch集群搭建 <span class="meta-nav">→</span></a></span>
     
 </nav><!-- .nav-single -->
 
@@ -156,10 +165,6 @@
       <ul>
         
           <li>
-            <a href="/2020/12/15/K8s%E6%90%AD%E5%BB%BA%E9%83%A8%E7%BD%B2/">(no title)</a>
-          </li>
-        
-          <li>
             <a href="/2020/12/01/Docker%E6%95%99%E7%A8%8B%E8%AE%B2%E8%A7%A3/">Docker 教程讲解</a>
           </li>
         
@@ -173,6 +178,10 @@
         
           <li>
             <a href="/2020/09/03/Dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/">Docker Dockerfile</a>
+          </li>
+        
+          <li>
+            <a href="/2020/09/03/K8s%E6%90%AD%E5%BB%BA%E9%83%A8%E7%BD%B2/">kubeadm部署k8s集群</a>
           </li>
         
       </ul>
