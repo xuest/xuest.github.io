@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Redis1  Redis下载从该网站http:&#x2F;&#x2F;www.redis.net.cn&#x2F;下载redis稳定版本[Redis 5.0.4](http:&#x2F;&#x2F;download.redis.io&#x2F;releases&#x2F;redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)。 模式: 三主三从 5.0版本后不需要ruby支持，其底层改由C实现 主从配置、leader选举由redis自己实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis集群安装部署">
+<meta property="og:url" content="http://example.com/2020/06/03/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="Augustxuesong">
+<meta property="og:description" content="Redis1  Redis下载从该网站http:&#x2F;&#x2F;www.redis.net.cn&#x2F;下载redis稳定版本[Redis 5.0.4](http:&#x2F;&#x2F;download.redis.io&#x2F;releases&#x2F;redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)。 模式: 三主三从 5.0版本后不需要ruby支持，其底层改由C实现 主从配置、leader选举由redis自己实现">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-06-03T05:59:50.000Z">
+<meta property="article:modified_time" content="2020-12-04T02:58:17.988Z">
+<meta property="article:author" content="xuesongtan">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/06/03/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Redis集群安装部署 | Augustxuesong</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Augustxuesong</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Augustxuesong</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/06/03/Redis%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="xuesongtan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Augustxuesong">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Redis集群安装部署
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-06-03 13:59:50" itemprop="dateCreated datePublished" datetime="2020-06-03T13:59:50+08:00">2020-06-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-12-04 10:58:17" itemprop="dateModified" datetime="2020-12-04T10:58:17+08:00">2020-12-04</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><h3 id="1-Redis下载"><a href="#1-Redis下载" class="headerlink" title="1  Redis下载"></a>1  Redis下载</h3><p>从该网站<a target="_blank" rel="noopener" href="http://www.redis.net.cn/%E4%B8%8B%E8%BD%BDredis%E7%A8%B3%E5%AE%9A%E7%89%88%E6%9C%AC[Redis">http://www.redis.net.cn/下载redis稳定版本[Redis</a> 5.0.4](<a target="_blank" rel="noopener" href="http://download.redis.io/releases/redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)%E3%80%82">http://download.redis.io/releases/redis-3.0.6.tar.gz)(redis-5.0.4.tar.gz)。</a></p>
+<p>模式: 三主三从</p>
+<p>5.0版本后不需要ruby支持，其底层改由C实现</p>
+<p>主从配置、leader选举由redis自己实现</p>
+<h4 id="1-1-测试服务器"><a href="#1-1-测试服务器" class="headerlink" title="1.1 测试服务器"></a>1.1 测试服务器</h4><p>操作系统: centos</p>
+<p>192.168.102.33:6379 192.168.102.33:6380</p>
+<p>192.168.102.34:6379 192.168.102.34:6380</p>
+<p>192.168.102.35:6379 192.168.102.35:6380</p>
+<h4 id="1-2-安装redis"><a href="#1-2-安装redis" class="headerlink" title="1.2 安装redis"></a>1.2 安装redis</h4><p>yum install gcc</p>
+<p>yum install tcl</p>
+<p>make 安装需要gcc和tcl</p>
+<p>#在集群服务器做出以下操作：</p>
+<p>cd /usr/local/</p>
+<p>tar xzf redis-5.0.4.tar.gz</p>
+<p>cd redis-5.0.4</p>
+<p>执行make install</p>
+<p>至此redis安装完成</p>
+<p>运行#make test 测试</p>
+<h3 id="2-redis配置文件"><a href="#2-redis配置文件" class="headerlink" title="2  redis配置文件"></a>2  redis配置文件</h3><p>cp redis.conf nodes-6379.conf </p>
+<p>cp redis.conf nodes-6380.conf</p>
+<p>分别编辑nodes-6379.conf 、nodes-6380.conf</p>
+<p>#bind 127.0.0.1（注释掉）</p>
+<p>daemonize yes  //后台启动</p>
+<p>port 6379（分别对每个机器的端口号进行设置）</p>
+<p>dir /usr/local/redis-data/6379/（指定数据文件存放位置，必须要指定不同的目录位置，不然会丢失数据）</p>
+<p>cluster-enabled yes（启动集群模式）</p>
+<p>cluster-config-file nodes-6379.conf（集群节点信息文件，这里63xx最好和port对应上）</p>
+<p>cluster-node-timeout 5000</p>
+<p>protected-mode no  （关闭保护模式）</p>
+<p>appendonly yes （启动：设置yes,修改默认的appendonly no,改为yes</p>
+<p>将有数据的aof文件复制一份保存到对应目录(config get dir)</p>
+<p>恢复：重启redis然后重新加载） </p>
+<p>requirepass admin （配置redis服务器密码，不配的话jedis连接会报如下错误）</p>
+<p>以上配置每台都需要调整，nodes-6379.conf，nodes-6380.conf</p>
+<h3 id="3-启动redis实例"><a href="#3-启动redis实例" class="headerlink" title="3  启动redis实例"></a>3  启动redis实例</h3><p>cd /usr/local/</p>
+<p>mkdir redis-data/6379</p>
+<p>mkdir redis-data/6380</p>
+<p>Redis启动时不会自动创建数据文件存放目录，启动前手动创建</p>
+<p>cd /usr/local/ redis-5.0.4/scr</p>
+<p>启动</p>
+<p>./redis-server ../nodes-6379.conf</p>
+<p>./redis-server ../nodes-6380.conf</p>
+<p>以此步骤启动每个机器上的redis实例</p>
+<h3 id="4-redis配置集群"><a href="#4-redis配置集群" class="headerlink" title="4  redis配置集群"></a>4  redis配置集群</h3><p>任选一台 我这使用192.168.102.33</p>
+<p>cd /usr/local/redis-5.0.4/src/</p>
+<p>./redis-cli –cluster create –cluster-replicas 1 192.168.102.33:6379 192.168.102.33:6380 192.168.102.34:6379 192.168.102.34:6380 192.168.102.35:6379 192.168.102.35:6380 –cluster-replicas 1 -a admin</p>
+<p>注意–cluster-replicas 1 -a admin 带上密码 否则集群创建不成功</p>
+<p>以上redis5.0.4集群搭建完毕</p>
+<h3 id="5-测试"><a href="#5-测试" class="headerlink" title="5  测试"></a>5  测试</h3>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/06/03/%E5%95%86%E5%9F%8E%E7%B3%BB%E7%BB%9F/" rel="prev" title="商城管理系统">
+      <i class="fa fa-chevron-left"></i> 商城管理系统
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/03/Maven%E7%9F%A5%E8%AF%86%E5%BA%93/" rel="next" title="Maven知识库">
+      Maven知识库 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis"><span class="nav-number">1.</span> <span class="nav-text">Redis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Redis%E4%B8%8B%E8%BD%BD"><span class="nav-number">1.1.</span> <span class="nav-text">1  Redis下载</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E6%B5%8B%E8%AF%95%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 测试服务器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%AE%89%E8%A3%85redis"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 安装redis</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.2.</span> <span class="nav-text">2  redis配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%90%AF%E5%8A%A8redis%E5%AE%9E%E4%BE%8B"><span class="nav-number">1.3.</span> <span class="nav-text">3  启动redis实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-redis%E9%85%8D%E7%BD%AE%E9%9B%86%E7%BE%A4"><span class="nav-number">1.4.</span> <span class="nav-text">4  redis配置集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%B5%8B%E8%AF%95"><span class="nav-number">1.5.</span> <span class="nav-text">5  测试</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xuesongtan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xuesongtan</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
